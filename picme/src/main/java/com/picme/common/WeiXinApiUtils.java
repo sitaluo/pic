@@ -2,9 +2,15 @@ package com.picme.common;
 
 import java.util.LinkedHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.picme.weixin.entity.WeiXinUser;
 
 public class WeiXinApiUtils {
+	
+	static Logger logger = LoggerFactory.getLogger(WeiXinApiUtils.class);
+	
 	private static String APP_ID = "wx4ce2981befb8f07f";//
 	private static String APP_SECRET = "ba6ae35ed43f18f58a25ec820a6bef66";
 	
@@ -12,6 +18,8 @@ public class WeiXinApiUtils {
 	private static String ACCESS_TOKEN = null;
 	private static Long LAST_GET_ACCESS_TOKEN_TIME = 0L;
 
+	private static String JS_API_TICKET = null;
+	private static Long LAST_GET_JS_API_TICKET_TIME = 0L;
 	
 	private static String GET_ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + APP_ID + "&secret=" + APP_SECRET;
 
@@ -21,14 +29,36 @@ public class WeiXinApiUtils {
 		boolean  needRefresh = ((currentTimeSecond - LAST_GET_ACCESS_TOKEN_TIME) / 1000) - 7200 >= 0 ? true : false;
 		System.out.println(needRefresh);
 		if(ACCESS_TOKEN == null || needRefresh){
-			String access_token = HttpClientUtils.get(GET_ACCESS_TOKEN_URL);
-			//String access_token = "GiB67wqYGwU6_G1yYqNxUPGcMbTkcG6wieegS5Ue71NvxAZ5eTLpysTRgtrap2oEOeTZvozgXipcWM_zWoWvCykYiMB7AA7PZBSTgOARyjCMbt_GxWr7T91w-5U4mOkTDEYeACAHIC";
+			String jsonStr = HttpClientUtils.get(GET_ACCESS_TOKEN_URL);
+			LinkedHashMap<Object, Object> o = (LinkedHashMap<Object, Object>) JsonUtil.readValue(jsonStr, Object.class);
+			String access_token = (String) o.get("access_token");
 			ACCESS_TOKEN = access_token;
 		}
 		LAST_GET_ACCESS_TOKEN_TIME = currentTimeSecond;
+		logger.debug("ACCESS_TOKEN:"+ACCESS_TOKEN);
 		return ACCESS_TOKEN;
 	}
 	
+	/**
+	 * @param access_token全局
+	 * @return
+	 */
+	public static String getJsapi_ticket(){
+		String access_token = WeiXinApiUtils.getAccessToken();
+		
+		Long currentTimeSecond = System.currentTimeMillis();
+		boolean  needRefresh = ((currentTimeSecond - LAST_GET_JS_API_TICKET_TIME) / 1000) - 7200 >= 0 ? true : false;
+		if(JS_API_TICKET == null || needRefresh){
+			String url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+access_token+"&type=jsapi";
+			String jsonStr = HttpClientUtils.get(url);
+			LinkedHashMap<Object, Object> o = (LinkedHashMap<Object, Object>) JsonUtil.readValue(jsonStr, Object.class);
+			String ticket = (String) o.get("ticket");
+			JS_API_TICKET = ticket;
+		}
+		logger.debug("JS_API_TICKET:"+JS_API_TICKET);
+		LAST_GET_JS_API_TICKET_TIME = currentTimeSecond;
+		return JS_API_TICKET; 
+	}
 	/**
 	 * {
 		   "access_token":"ACCESS_TOKEN",
@@ -67,12 +97,15 @@ public class WeiXinApiUtils {
 		return u;
 	}
 	
+	
+	
+	
 	public static void main(String[] args) {
 		String access_tken = "iQaOVV6UFMoeoLmPGOHBVkGEvlmikOUVZOkwbV9QlNEVPUroLvMlRq3quatYxRbKsqCFjZfZ-LMOnBbJxWEXNv1IhfUCfGMvmEBm2w0ww-bLcN20WHhIyfMo45jX0SuvRUHfAEANQD";
 		String url = "https://api.weixin.qq.com/cgi-bin/user/info?access_token="+access_tken+"&openid=OPENID&lang=zh_CN";
 		System.out.println(getAccessToken());
 		//ZCZfrBt9CRRvxRZTz6Yi5FoAg-MydaaI1fPSRHpN77c1gu9uhxrSF9_qrWmGFKSlioMH5jJZQlMdcTmG9Y_dcnUmZ4M7sRqG3yn-f6BMm4kKYQiABATHZ
-	
+	 
 		//https://open.weixin.qq.com/connect/oauth2/authorize?appid=APPID&redirect_uri=REDIRECT_URI&response_type=code&scope=SCOPE&state=STATE#wechat_redirect
 		String encode_url = java.net.URLEncoder.encode("");
 	}

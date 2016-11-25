@@ -1,8 +1,6 @@
 package com.picme.common;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.Map;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;

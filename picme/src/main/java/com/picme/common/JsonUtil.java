@@ -52,6 +52,7 @@ public class JsonUtil {
 	    
 	    public static void main(String[] args) {
 			String s = "{ \"access_token\":\"ACCESS_TOKEN\",\"expires_in\":7200,\"refresh_token\":\"REFRESH_TOKEN\", \"openid\":\"OPENID\",\"scope\":\"SCOPE\"}";
+			@SuppressWarnings("rawtypes")
 			LinkedHashMap o = (LinkedHashMap) JsonUtil.readValue(s, Object.class);
 			System.out.println(o.get("access_token"));
 	    }
