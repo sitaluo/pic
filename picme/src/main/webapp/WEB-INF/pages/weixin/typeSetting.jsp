@@ -9,12 +9,15 @@
 </style>
 </head>
 <body class="" id="body">
+
 <input id="timestamp" type="hidden" value="${jsApiSign.get('timestamp')}" />
 <input id="noncestr" type="hidden" value="${jsApiSign.get('nonceStr')}" />
 <input id="signature" type="hidden" value="${jsApiSign.get('signature')}" />
 <input id="url" type="hidden" value="${jsApiSign.get('url')}" />
-     
+
 <input type="hidden" name="albumId" id="albumId" value="${album.id }">
+<input type="hidden" name="userId" id="userId" value="${current_user.id }">
+
 <div class="" style="padding:10px;">
 			<div class="col-xs-4 pull-left">上一步</div>
 			<div class="col-xs-4">照片排版</div>
@@ -188,6 +191,8 @@ wx.ready(function(){
 	aaa();
 });
 
+var localIdArr = null;
+
 function aaa(){
 	wx.chooseImage({
 	    count: 8, // 默认9
@@ -195,15 +200,18 @@ function aaa(){
 	    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
 	    success: function (res) {
 	        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
-	        console.log(localIds);
+	        console.log("选择图片："+localIds);
+	        localIdArr = localIds;
 	        for(var i = 0; i< localIds.length; i ++ ){
-	        	//$("#img"+(i+1)).attr("src",localIds[i]);
-	        	weixinUpload(localIds[i]);
+	        	$("img[name=preview"+(i+1)+"]").attr("src",localIds[i]);
+	        	//weixinUpload(localIds[i]);
 	        }
 	        
 	    }
 	});
 }
+
+var serverIdArr = new Array();
 
 function weixinUpload(localId){
 	wx.uploadImage({
@@ -211,11 +219,59 @@ function weixinUpload(localId){
 	    isShowProgressTips: 1, // 默认为1，显示进度提示
 	    success: function (res) {
 	        var serverId = res.serverId; // 返回图片的服务器端ID
-	        console.log(serverId);
-	        alert(serverId);
+	        console.log("上传到微信服务器："+serverId);
+	        alert("上传到微信服务器："+serverId);
+	        serverIdArr.push(serverId);
+	        downloadAndUploadImg(serverId);
 	    }
 	});
 }
+
+/**
+ * 上传一个文件到自己的服务器
+ */
+function downloadAndUploadImg(serverId){
+	var albumId = $("#albumId").val();
+	var userId = $("#userId").val();
+	if(userId > 0 && albumId > 0){
+	}else{
+		console.log("userId，albumId不能为空");	
+	}
+	var dataStr = "mediaId="+serverId + "&userId=" + userId + "&albumId=" + albumId;
+	
+	$.ajax({
+		type : "POST",
+		data : dataStr,
+		dataType : "json",
+		url : "${basePath }download/tmpFile.json",
+		success : function(resp, textStatus) {
+			//console.info(resp);
+			if (1 == resp.ret_flag) {
+				console.log("上传到服务器");
+				alert("上传到服务器");
+			} else {
+				console.log("上传到服务器失败了");
+			}
+		},
+		error : function(request, textStatus, errorThrown) {
+			console.log("网络连接失败");
+		}
+	});
+}
+
+$(function(){
+	$("#next").click(function(){
+		if(confirm("亲，图片即将上传，影集返回将根据当前排版制作，确定要上传吗？")){
+			alert("localIdArr:"+localIdArr.length + "="+localIdArr + "---" + localIdArr[0]);
+			for( var i = 0; i< localIdArr.length; i++){
+				alert(localIdArr[i]);
+				weixinUpload(localIdArr[i]);
+			}
+		}
+		
+	});
+});
+
 </script>
 <script type="text/javascript">
 	$(function(){
@@ -225,7 +281,7 @@ function weixinUpload(localId){
 			$("input[name=file"+order+"]").trigger("click");
 		});
 		
-		$("#next").click(function(){
+		$("#next---").click(function(){
 			var step = $("input[name=step]").val();
 			if(step == 1){
 				$("input[name=step]").val(2);
