@@ -29,6 +29,8 @@
   <div class="row">
 	  <div class="col-xs-12 col-sm-12 col-md-12">
 	  	<p>亲，点击图片可以操作更换，拖动图片可以调整页面顺序</p>
+	  	<p id="uploadingMsg" class="hidden">亲，图片上传ing，请勿关闭应用，且保持网络畅通</p>
+	  	<p id="uploadCompleteMsg" class="hidden">亲，图片已经全部上传成功</p>
 	  </div>
 	
 	</div>
@@ -194,8 +196,10 @@ wx.ready(function(){
 var localIdArr = null;
 
 function aaa(){
+	localIdArr = null;
+	
 	wx.chooseImage({
-	    count: 8, // 默认9
+	    count: 24, // 默认9
 	    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
 	    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
 	    success: function (res) {
@@ -204,14 +208,13 @@ function aaa(){
 	        localIdArr = localIds;
 	        for(var i = 0; i< localIds.length; i ++ ){
 	        	$("img[name=preview"+(i+1)+"]").attr("src",localIds[i]);
-	        	//weixinUpload(localIds[i]);
 	        }
-	        
 	    }
 	});
 }
 
 var serverIdArr = new Array();
+var uploadImgCompletedNum = 0;
 
 function weixinUpload(localId){
 	wx.uploadImage({
@@ -220,7 +223,7 @@ function weixinUpload(localId){
 	    success: function (res) {
 	        var serverId = res.serverId; // 返回图片的服务器端ID
 	        console.log("上传到微信服务器："+serverId);
-	        alert("上传到微信服务器："+serverId);
+	        //alert("上传到微信服务器："+serverId);
 	        serverIdArr.push(serverId);
 	        downloadAndUploadImg(serverId);
 	    }
@@ -248,7 +251,14 @@ function downloadAndUploadImg(serverId){
 			//console.info(resp);
 			if (1 == resp.ret_flag) {
 				console.log("上传到服务器");
-				alert("上传到服务器");
+				
+				uploadImgCompletedNum = uploadImgCompletedNum + 1;
+				if(uploadImgCompletedNum == serverIdArr.length){
+					//上传完成
+					$("#uploadingMsg").addClass("hidden").removeClass("show");
+					$("#uploadCompleteMsg").addClass("show").removeClass("hidden");
+				}
+				//alert("上传到服务器");
 			} else {
 				console.log("上传到服务器失败了");
 			}
@@ -261,157 +271,28 @@ function downloadAndUploadImg(serverId){
 
 $(function(){
 	$("#next").click(function(){
-		if(confirm("亲，图片即将上传，影集返回将根据当前排版制作，确定要上传吗？")){
-			alert("localIdArr:"+localIdArr.length + "="+localIdArr + "---" + localIdArr[0]);
-			for( var i = 0; i< localIdArr.length; i++){
-				alert(localIdArr[i]);
-				weixinUpload(localIdArr[i]);
+		var step = $("input[name=step]").val();
+		if(step == 1){
+			$("input[name=step]").val(2);
+			if(confirm("亲，图片即将上传，影集返回将根据当前排版制作，确定要上传吗？")){
+				//alert("localIdArr:"+localIdArr.length + "="+localIdArr + "---" + localIdArr[0]);
+				$("#uploadingMsg").addClass("show").removeClass("hidden");
+				for( var i = 0; i< localIdArr.length; i++){
+					weixinUpload(localIdArr[i]);
+				}
+			}
+		}else{
+			var albumId =$("#albumId").val();
+			if(albumId > 0){
+				window.location.href="${basePath}weixin/address/list?albumId="+albumId;
+			}else{
+				alert("出错了，请刷新页面重试");
 			}
 		}
 		
 	});
 });
 
-</script>
-<script type="text/javascript">
-	$(function(){
-		$("#select_img_div img").click(function(){
-			var order = $(this).attr("name").replace("preview","");
-			console.log(order);
-			$("input[name=file"+order+"]").trigger("click");
-		});
-		
-		$("#next---").click(function(){
-			var step = $("input[name=step]").val();
-			if(step == 1){
-				$("input[name=step]").val(2);
-				$("#step1_div").addClass("hidden").removeClass("show");
-				$("#step2_div").addClass("show").removeClass("hidden");
-				
-				$("input[type=file]").each(function(){
-					var file = $(this)[0].files[0];
-					var order = $(this).attr("name").replace("file","");
-					if(file && file.name != null){
-						console.log("to upload file:"+file.name);
-						uploadFile(file,order);
-					}else{
-					}
-				});
-			}else{
-				var albumId =$("#albumId").val();
-				if(albumId > 0){
-					window.location.href="${basePath}weixin/address/list?albumId="+albumId;
-				}else{
-					alert("出错了，请刷新页面重试");
-				}
-			}
-			
-		});
-	});
-
-      function fileSelected(obj) {
-    	 var fileName = obj.name; 
-    	 var order = fileName.replace("file", "");
-    	 console.log("fileName:"+fileName + ",order:"+order);
-    	  
-        //var file = document.getElementById('fileToUpload').files[0];
-        file = obj.files[0];
-        console.log(file);
-        var filePath = file.value;
-        console.log("filePath:"+filePath);
-	      
-		var previewImg = document.getElementsByName('preview'+order);
-			var reader = new FileReader();
-			reader.onloadend = function() {
-				//img1.src = reader.result;
-				for (var i = 0; i < previewImg.length; i++) {
-					previewImg[i].src = reader.result;
-				}
-			}
-			if (file) {
-				reader.readAsDataURL(file);
-			} else {
-				//preview.src = "";
-			}
-	
-			if (file) {
-				var fileSize = 0;
-				if (file.size > 1024 * 1024)
-					fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100)
-							.toString()
-							+ 'MB';
-			else
-				fileSize = (Math.round(file.size * 100 / 1024) / 100)
-						.toString()
-						+ 'KB';
-
-			/* document.getElementById('fileName').innerHTML = 'Name: '
-					+ file.name;
-			document.getElementById('fileSize').innerHTML = 'Size: ' + fileSize;
-			document.getElementById('fileType').innerHTML = 'Type: '
-					+ file.type; */
-		}
-	}
-
-	function uploadFile(file,order) {
-		if(file && file.name != null){
-		}else{
-			return;
-		}
-		var fd = new FormData();
-		fd.append("id", 1);
-		//fd.append("file", document.getElementById('fileToUpload').files[0]);
-		fd.append("file", file);
-		var xhr = new XMLHttpRequest();
-		xhr.upload.addEventListener("progress", function(evt){
-			console.log(evt);
-			if (evt.lengthComputable) {
-				var percentComplete = Math.round(evt.loaded * 100 / evt.total);
-				//document.getElementById('progressNumber').innerHTML = percentComplete.toString()+ '%';
-				var progressDiv = $("#progress"+order);
-				progressDiv.children("div").attr("style","width:"+percentComplete.toString()+"%");
-				progressDiv.children("div").children("span").html(percentComplete.toString()+"%");
-				if(percentComplete.toString() == "100"){
-					progressDiv.parent("div").next("div").children("span").addClass("show").removeClass("hidden");
-				}
-			} else {
-				//document.getElementById('progressNumber').innerHTML = 'unable to compute';
-			}
-			
-		}, false);
-		xhr.addEventListener("load", uploadComplete, false);
-		xhr.addEventListener("error", uploadFailed, false);
-		xhr.addEventListener("abort", uploadCanceled, false);
-		xhr.open("POST", "${basePath }file/upload2");
-		xhr.send(fd);
-	}
-
-	function uploadProgress(evt) {
-		console.log(evt);
-		if (evt.lengthComputable) {
-			var percentComplete = Math.round(evt.loaded * 100 / evt.total);
-			document.getElementById('progressNumber').innerHTML = percentComplete
-					.toString()
-					+ '%';
-		} else {
-			document.getElementById('progressNumber').innerHTML = 'unable to compute';
-		}
-	}
-
-	function uploadComplete(evt) {
-		/* This event is raised when the server send back a response */
-		//alert(evt.target.responseText);
-		var restResult = evt.target.responseText;
-		console.log(restResult);
-	}
-
-	function uploadFailed(evt) {
-		alert("There was an error attempting to upload the file.");
-	}
-
-	function uploadCanceled(evt) {
-		alert("The upload has been canceled by the user or the browser dropped the connection.");
-	}
 </script>
 
 </body>
