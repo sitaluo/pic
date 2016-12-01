@@ -16,6 +16,7 @@ import com.picme.common.RestResult;
 import com.picme.entity.Address;
 import com.picme.entity.User;
 import com.picme.service.AddressService;
+import com.picme.service.UserService;
 
 @Controller
 @RequestMapping(value="weixin/address")
@@ -23,6 +24,8 @@ public class AddressController {
 	
 	@Autowired
 	private AddressService addressService;
+	@Autowired
+	private UserService userService;
 
 	@RequestMapping("/list") 
     public ModelAndView list(HttpServletRequest request,Integer albumId) { 
@@ -45,10 +48,20 @@ public class AddressController {
 	
 	@ResponseBody
 	@RequestMapping("/save") 
-    public RestResult<Address> save(HttpServletRequest request,Address address) { 
+    public RestResult<Address> save(HttpServletRequest request,Address address,Integer isDefault) { 
 		RestResult<Address> rest = new RestResult<Address>();
 		try {
 			addressService.save(address);
+			if(isDefault != null && isDefault == 1){
+				//设为当前用户的默认地址
+				User curUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER_KEY);
+				if(curUser != null && address.getId() != null){
+					User u = new User();
+					u.setId(curUser.getId());
+					u.setDefaultAddressId(address.getId());
+					userService.save(u);
+				}
+			}
 			rest.setData(address);
 		} catch (Exception e) {
 			rest.setError_stack_trace(e.getMessage());

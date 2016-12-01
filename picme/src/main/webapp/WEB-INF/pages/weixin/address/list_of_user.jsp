@@ -3,65 +3,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>快递信息</title>
+<title>影集制作</title>
 <%@ include file="../../common/GTIncludeHead.jsp"%>
 
 <style type="text/css">
+.margin0px{
+	margin: 0px;
+}
+
+.margin0px div{
+	margin: 0px;
+	padding: 0px;
+}
 </style>
 </head>
 <body class="" id="body">
-<div id="container" class="container" >
-	<div class="" style="padding:10px;">
-			<div class="col-xs-4 "><span class="glyphicon glyphicon-chevron-left pull-left"></span></div>
-			<div class="col-xs-4" style="text-align:center;">快递信息</div>
-			<div class="col-xs-4"><span class="pull-right" id="next">下一步</span></div>
+<div class="" style="padding:10px;">
+	<img src="${basePath }static/upload/sysImgs/Rectangle.png" style="height:16px;"> 快递信息
   </div>
+<div id="container" class="container" >
   <hr class="col-xs-12 col-sm-12 col-md-12 ">
-	<div class="row">
+  <c:if test="${empty addressList }">
+ 	 <div class="row">
 	  <div class="col-xs-12 col-sm-12 col-md-12">
 	  	<p>亲，您还没有快递信息，赶快添加吧~</p>
 	  </div>
-	
 	</div>
 	<hr class="col-xs-12 col-sm-12 col-md-12 ">
-	<div class="row">
+  </c:if>
+	
+	<div class="row margin0px">
 		<c:forEach items="${addressList }" var="item">
 			<div class="col-xs-12 col-sm-12 col-md-12 ">
-			  	 <div class="col-xs-10 col-sm-10 col-md-10">
-			  	 		<div class="col-xs-12 col-sm-12 col-md-12"><div class="col-xs-8 col-sm-8 col-md-8">${item.person } </div><div class="col-xs-4 col-sm-4 col-md-4">${item.phone } </div> </div>
+			  	 <div class="col-xs-10 col-sm-10 col-md-10" style="padding-right: 10px;border-right: 1px solid #D9D9D9;">
+			  	 		<div class="col-xs-12 col-sm-12 col-md-12"><div class="col-xs-7 col-sm-7 col-md-7">${item.person } </div><div class="col-xs-5 col-sm-5 col-md-5">${item.phone } </div> </div>
 			  	 		<div class="col-xs-12 col-sm-12 col-md-12"><div class="col-xs-12 col-sm-12 col-md-12">${item.region }${item.address }</div> </div>
 			  	 		<div class="col-xs-12 col-sm-12 col-md-12">
 			  	 			<input name="addressId" value="${item.id }" type="hidden">
-			  	 			<button type="button" class="btn btn-link">编辑</button>
-			  	 			<button type="button" class="btn btn-link">删除</button>
+			  	 			<input name="person" value="${item.person }" type="hidden">
+			  	 			<input name="region" value="${item.region }" type="hidden">
+			  	 			<input name="address" value="${item.address }" type="hidden">
+			  	 			<input name="phone" value="${item.phone }" type="hidden">
+			  	 			<button name="editBtn" type="button" class="btn btn-link">编辑</button>
+			  	 			<button name="deleteBtn" type="button" class="btn btn-link">删除</button>
 			  	 		</div>
 			  	 </div>
-			  	 <div class="col-xs-2 col-sm-2 col-md-2">
+			  	 <div class="col-xs-2 col-sm-2 col-md-2"><br>
 			  	 		<div class="checkbox"> <label><input type="radio" name="radio_address_id" value="${item.id }"></label></div>
 			 		 </div>
 			  </div>
-			  <hr class="col-xs-12 col-sm-12 col-md-12 ">
+			  <hr class="col-xs-12 col-sm-12 col-md-12" style="margin: 10px 0px;">
 		</c:forEach>
-	  
-	<!--   <div class="col-xs-12 col-sm-12 col-md-12">
-	  	 <div class="col-xs-10 col-sm-10 col-md-10">
-	  	 		<div class="col-xs-12 col-sm-12 col-md-12"><div class="col-xs-8 col-sm-8 col-md-8">张三丰 </div><div class="col-xs-4 col-sm-4 col-md-4">15622715952 </div> </div>
-	  	 		<div class="col-xs-12 col-sm-12 col-md-12"><div class="col-xs-12 col-sm-12 col-md-12">广东省广州市海珠区革新路大阪仓1094创意园</div> </div>
-	  	 		<div class="col-xs-12 col-sm-12 col-md-12"><button type="button" class="btn btn-link">编辑</button><button type="button" class="btn btn-link">删除</button> </div>
-	  	 </div>
-	  	 <div class="col-xs-2 col-sm-2 col-md-2">
-	  	 		<div class="checkbox"> <label><input type="checkbox"></label></div>
-	 		 </div>
-	  </div> -->
 	 </div> 
-	<div class="row">
-			<div class="col-xs-12 col-sm-12 col-md-12">
-				<button id="addAddressBtn" type="button" class="btn btn-primary col-xs-12 col-sm-12 col-md-12">添加新地址</button>
-			</div>
+	<div class="col-xs-12 col-sm-12 col-md-12" style="position: fixed;top:auto; left: auto; right: auto;  bottom: 0px;padding: 0px;">
+ 		<button id="addAddressBtn" type="button" class="btn btn-primary col-xs-6 col-sm-6 col-md-6" style="border-radius:0px;">添加新地址</button>
+		<button id="next" type="button" class="btn btn-primary col-xs-6 col-sm-6 col-md-6" style="border-radius:0px;">下一步</button>
 	</div>
-	
-
-
 </div>
 
 
@@ -75,6 +72,7 @@
       </div>
       <div class="modal-body">
 			<form role="form" id="addressForm">
+				<input name="id" type="hidden" value="">
 				<input name="userId" type="hidden" value="${current_user.id }">
 			  <div class="form-group">
 			    <label for="person">联系人</label>
@@ -97,7 +95,8 @@
 			  <div class="form-group">
 				   <div class="checkbox">
 				    <label>
-				      <input type="checkbox">设为默认地址
+				      <input type="checkbox" id="isDefaultCheckBox">设为默认地址
+				      <input name="isDefault" id="isDefault" value="0" type="hidden">
 				    </label>
 				  </div>
 			  </div>
@@ -112,18 +111,46 @@
   </div>
 </div>
 
+
 <%@ include file="../../common/MainJS.jsp"%>
 <script src="${staticPath }/bootstrap-3.3.0/modal.js"></script>
 
 <script type="text/javascript">
 $(function(){
+	$("#isDefaultCheckBox").click(function(){
+		var isChecked = $(this).prop("checked");
+		console.log(isChecked);
+		if(isChecked){
+			$("#isDefault").val(1);
+		}
+	});
 	$("#addAddressBtn").click(function(){
 		$("#myModal").modal("show");
-		
 	});
 	$("#saveAddressBtn").click(function(){
 		$(this).val("保存...");
 		submitForm($(this));
+	});
+	
+	$("input[name=deleteBtn]").click(function(){
+		
+	});
+	
+	$("button[name=editBtn]").click(function(){
+		var thisBtn = $(this);
+		var parentDiv = thisBtn.parent("div");
+		var addressId = parentDiv.children("input[name=addressId]").val();
+		var person = parentDiv.children("input[name=person]").val();
+		var region = parentDiv.children("input[name=region]").val();
+		var address = parentDiv.children("input[name=address]").val();
+		var phone = parentDiv.children("input[name=phone]").val();
+		var showDiv = $("#myModal");
+		showDiv.find("input[name=addressId]").val(addressId);
+		showDiv.find("input[name=person]").val(person);
+		showDiv.find("input[name=region]").val(region);
+		showDiv.find("input[name=phone]").val(phone);
+		showDiv.modal("show");
+		
 	});
 	$("#next").click(function(){
 		var addressId = $(":radio[name=radio_address_id]:checked").val();

@@ -32,7 +32,7 @@ ${current_user.nickName }
 <br>
 <a href="${basePath }file/toUpload">图片上传测试</a>
 <a href="${basePath }weixin/typeSetting2">照片排版test</a>
-
+<a href="${basePath }weixin/testsort">排序 测试</a>
 
 <div class="portlet light">
 	<div class="portlet-body">	

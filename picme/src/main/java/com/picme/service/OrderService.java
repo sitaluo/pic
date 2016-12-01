@@ -24,6 +24,9 @@ public class OrderService {
 		return orderMapper.selectByPrimaryKey(record.getId());
 	}
 	public Order getById(Integer id) {
+		if(id == null){
+			return null;
+		}
 		return orderMapper.selectByPrimaryKey(id);
 	}
 	

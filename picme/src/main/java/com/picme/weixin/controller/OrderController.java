@@ -1,6 +1,7 @@
 package com.picme.weixin.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -13,6 +14,7 @@ import com.picme.common.BusinessNoUtils;
 import com.picme.common.Constants;
 import com.picme.entity.Order;
 import com.picme.entity.PhotoAlbum;
+import com.picme.entity.User;
 import com.picme.service.OrderService;
 import com.picme.service.PhotoAlbumService;
 
@@ -46,7 +48,10 @@ public class OrderController {
 			order = new Order();
 			order.setAlbumId(albumId);
 			order.setAlbumNo(album.getNo());
-			order.setUserId(albumId);
+			User curUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER_KEY);
+			if(curUser != null){
+				order.setUserId(curUser.getId());
+			}
 			order.setAddressId(addressId);
 			order.setOrderNo(BusinessNoUtils.getCommonBusinessNo());
 			order.setGoodsType(Constants.GoodsType.PHOTO_ALBUM);
@@ -66,10 +71,29 @@ public class OrderController {
 	 * @throws Exception 
 	 */
 	@RequestMapping("/sureOrder")   
-    public ModelAndView sureOrder(HttpServletRequest request,Integer albumId,Integer orderId) throws Exception { 
+    public ModelAndView sureOrder(HttpServletRequest request,Integer albumId,Integer orderId,Integer paySuccess) throws Exception { 
 		ModelAndView mv = new ModelAndView("weixin/order/sure");
-		Order order = null;
+		mv.addObject("orderId",orderId);
+		mv.addObject("albumId",albumId);
+		mv.addObject("paySuccess",paySuccess);
+        return mv; 
+    }
+	
+	@RequestMapping("/myOrder")  
+    public ModelAndView myOrder(HttpServletRequest request) throws Exception { 
+		ModelAndView mv = new ModelAndView("weixin/order/myOrder");
+		User curUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER_KEY);
+		List<Order> orderList = orderService.listByUserId(curUser.getId());
+		mv.addObject("orderList",orderList);
+        return mv; 
+    }
+	
+	@RequestMapping("/info")
+    public ModelAndView info(HttpServletRequest request,Integer orderId) throws Exception { 
+		ModelAndView mv = new ModelAndView("weixin/order/info");
+		Order order = orderService.getById(orderId);
 		mv.addObject("order",order);
         return mv; 
     }
+	
 }

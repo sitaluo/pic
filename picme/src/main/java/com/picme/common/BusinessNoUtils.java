@@ -11,13 +11,14 @@ public class BusinessNoUtils {
 		return no.replace(".", "");
 	}
 	
-	public static String getCommonBusinessNo(){
-		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss.sss");
-		String no = format.format(new Date());
+	public static String getCommonBusinessNo(){ 
+		SimpleDateFormat format =  new SimpleDateFormat("yyyyMMddHHmmss.sss");
+		String no = format.format(new Date() );  
 		return no.replace(".", "");
 	}
 	
 	public static void main(String[] args) {
+		
 		System.out.println(getPhotoAlbumNo()); 
 	}
 }

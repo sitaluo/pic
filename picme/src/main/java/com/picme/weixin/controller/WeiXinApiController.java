@@ -41,7 +41,7 @@ public class WeiXinApiController {
 	 */
 	@RequestMapping("/code")
 	public ModelAndView code(String code, String state,HttpSession session,HttpServletRequest request) throws Exception {
-		ModelAndView mv = new ModelAndView("weixin/test1");
+		ModelAndView mv = new ModelAndView("weixin/index");
 		//根据code获得微信用户信息
 		WeiXinUser weiXinUser = WeiXinApiUtils.getWeiXinUserInfo(code);
 		User user = userService.fromWeiXinUser(weiXinUser);
@@ -100,6 +100,12 @@ public class WeiXinApiController {
 		ModelAndView mv = new ModelAndView("weixin/typeSetting2");
 		Map<String,String> jsApiSign = JsApiSign.sign(request.getRequestURL().toString());
 		mv.addObject("jsApiSign", jsApiSign);
+        return mv; 
+    }
+	
+	@RequestMapping("/testsort" )   
+    public ModelAndView testsort(HttpServletRequest request) { 
+		ModelAndView mv = new ModelAndView("weixin/testsort");
         return mv; 
     }
 	
