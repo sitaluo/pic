@@ -69,4 +69,23 @@ public class AddressController {
 		}
         return rest; 
     }
+	
+	@ResponseBody
+	@RequestMapping("/delete") 
+    public RestResult<Address> delete(Integer addressId) { 
+		RestResult<Address> rest = new RestResult<Address>();
+		try {
+			if(addressId == null){
+				rest.setRet_msg("id不能为空");
+				rest.markAsfailed();
+			}else{
+				addressService.deleteById(addressId);
+			}
+		} catch (Exception e) {
+			rest.setError_stack_trace(e.getMessage());
+			rest.markAsfailed();
+		}
+        return rest; 
+    }
+	
 }

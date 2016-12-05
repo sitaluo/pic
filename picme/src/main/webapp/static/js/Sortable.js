@@ -343,6 +343,7 @@
 					} else {
 						target.parentNode.insertBefore(dragEl, after ? nextSibling : target);
 					}
+					refreshPageNumDiv();//自己添加的补丁
 				}
 			}
 		},
@@ -410,6 +411,7 @@
 
 				// Save sorting
 				this.options.store && this.options.store.set(this);
+				//refreshPageNumDiv();
 			}
 		},
 

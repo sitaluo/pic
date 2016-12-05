@@ -4,16 +4,35 @@
 <head>
 <title>影集排版</title>
 <%@ include file="../common/GTIncludeHead.jsp"%>
-
+<%@ include file="../common/taglibs.jsp"%>
 <style type="text/css">
 .img-responsive{
-	display: block;
+	display:block;
 	max-height: 100%;
 	width:auto;
-	margin: auto auto;
+	margin-top:auto;
+	margin-bottom:auto;
+	margin-left:auto;
+	margin-right:auto;
 	vertical-align: middle;
 }
+.marging15px{
+	/* margin: 15px; */
+	border: 1px solid gray;
+}
+.padding15px{
+	padding: 15px;
+}
+.padding10px{
+	padding: 10px;
+}
+.bd1{
+	border: 1px solid gray;
+}
+
 </style>
+
+
 </head>
 <body class="" id="body">
 
@@ -21,62 +40,49 @@
 <input type="hidden" name="userId" id="userId" value="${current_user.id }">
 
 <input type="hidden" name="coverImg" id="coverImg" value="">
-
 <div class="" style="padding:10px;">
 	<img src="${basePath }static/upload/sysImgs/Rectangle.png" style="height:16px;"> 影集排版
 </div>  
 <div class="col-xs-12 col-sm-12 col-md-12">
-	  	<p>亲，拖动图片可以调整页面顺序</p>
+	  	<p id="dragOrder">亲，拖动图片可以调整页面顺序</p>
 	  	<p id="uploadingMsg" class="hidden">亲，图片上传ing，请勿关闭应用，且保持网络畅通</p>
 	  	<p id="uploadCompleteMsg" class="hidden">亲，图片已经全部上传成功</p>
 	  </div>
-<div id="step1_div">
+<div id="step1_div" >
 	  
 	<hr>
-	<div class="">
-	  <div class="col-xs-6 col-sm-6 col-md-6"><img src="${basePath }static/upload/sysImgs/back_cover.jpg" class="img-responsive" alt=""></div>
-	  <div class="col-xs-6 col-sm-6 col-md-6"><img src="${basePath }static/upload/sysImgs/${coverImg }.jpg" class="img-responsive" alt=""></div>
+	<div class="col-xs-12 col-sm-12 col-md-12 padding10px">
+	  <div class="col-xs-6 col-sm-6 col-md-6 padding15px bd1"><img src="${basePath }static/upload/sysImgs/back_cover.jpg" class="img-responsive" style="border:1px dashed gray;"></div>
+	  <div class="col-xs-6 col-sm-6 col-md-6 padding15px bd1"><img src="${basePath }static/upload/sysImgs/${coverImg }.jpg" class="img-responsive" style="border:1px dashed gray;"></div>
 	  <div class="col-xs-12 col-sm-12 col-md-12"><span class="pull-left">封底</span><span class="pull-right">封面</span></div>
 	</div>
 	<hr>
-	<div class="col-xs-12 col-sm-12 col-md-12"" id="select_img_div" style="margin: 0px;135px;">
-		<div class="col-xs-6 col-sm-6 col-md-6" style="padding: 15px;0px;height:180px;">
-			<img name="preview1 " src="${basePath }static/upload/sysImgs/noimg.png"
-				class="img-responsive  noPreImg" alt="">
-				<input type="hidden" name="img_index" value="1">
-		</div>
-		<div class="col-xs-6 col-sm-6 col-md-6" style="padding: 15px;0px;height:180px;">
-			<img name="preview2" src="${basePath }static/upload/sysImgs/noimg.png"
-				class="img-responsive noPreImg" alt="">
-				<input type="hidden" name="img_index" value="2">
-		</div>
-		<div class="col-xs-6 col-sm-6 col-md-6" style="padding: 15px;0px;height:180px;">
-			<img name="preview3" src="${basePath }static/upload/sysImgs/noimg.png"
-				class="img-responsive noPreImg" alt="">
-				<input type="hidden" name="img_index" value="3">
-		</div>
-		<div class="col-xs-6 col-sm-6 col-md-6" style="padding: 15px;0px;height:180px;">
-			<img  name="preview4" src="${basePath }static/upload/sysImgs/noimg.png"
-				class="img-responsive noPreImg" alt="">
-				<input type="hidden" name="img_index" value="4">
-		</div>
-		<div class="col-xs-6 col-sm-6 col-md-6" style="padding: 15px;0px;height:180px;">
-			<img name="preview5"  src="${basePath }static/upload/sysImgs/noimg.png"
-				class="img-responsive noPreImg" alt="">
-				<input type="hidden" name="img_index" value="5">
-		</div>
-		<div class="col-xs-6 col-sm-6 col-md-6" style="padding: 15px;0px;height:180px;">
-			<img  name="preview6" src="${basePath }static/upload/sysImgs/noimg.png"
-				class="img-responsive noPreImg" alt="">
-				<input type="hidden" name="img_index" value="6">
-		</div>
+	<div class="row col-xs-12 col-sm-12 col-md-12 select_img_div" id="select_img_div" style="margin: 0px 0px;padding:10px;">
+		
+		<c:forTokens items="1,2,3,4,5,6" delims="," var="item" varStatus="i">
+		   <div class="tile col-xs-6 col-sm-6 col-md-6 marging15px " style="padding: 10px 10px;height:200px;">
+				<div class="tile__name"><span class="glyphicon glyphicon-edit imgEdit"></span></div>
+				<div class="tile__list" style="height:inherit;padding-bottom: 20px;display:table;vertical-align:middle;max-height:180px;width:100%;">
+					<span style="display:table-cell;vertical-align:middle;height:180px;width:0px;padding-bottom: 20px;">
+						<img name="preview1 " src="${basePath }static/upload/sysImgs/noimg.png"
+						class="img-responsive  noPreImg" alt="">
+					<input type="hidden" name="img_index" value="${i.index }"></span>
+				</div>
+			</div>
+			<c:if test="${((i.index + 1)%2 eq 0) && (i.index gt 0) }">
+				<div class="col-xs-12 col-sm-12 col-md-12 ignore pageNumDiv">
+					<span class="pull-left">P0${i.index }</span><span class="pull-right">P0${i.index + 1}</span>
+				</div>
+			</c:if>
+		</c:forTokens>
+		
 	</div>
 </div>
 	
 <div id="step2_div" class="hidden">
 	<div class="" id="upload_img_div">
 	  
-	  <div id="upImgDiv1" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px;0px;">
+	  <div id="upImgDiv1" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
 	  	<div class="col-xs-4 col-sm-4 col-md-4">
 	  		<img name="up_preview1" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="">
 	  		<input type="file" multiple name="file1" onchange="fileSelected(this);" class="hidden">
@@ -97,7 +103,7 @@
 	  	</div>
 	  </div>
 	  
-	  <div  id="upImgDiv2" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px;0px;">
+	  <div  id="upImgDiv2" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
 	  	<div class="col-xs-4 col-sm-4 col-md-4">
 	  		<img name="up_preview2" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="">
 	  		<input type="file" multiple="multiple" name="file2" onchange="fileSelected(this);" class="hidden">
@@ -117,7 +123,7 @@
 	  		<span  class="btn btn-danger hidden reUpload" >重新上传</span>
 	  	</div>
 	  </div>
-	  <div id="upImgDiv3" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px;0px;">
+	  <div id="upImgDiv3" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
 	  	<div class="col-xs-4 col-sm-4 col-md-4">
 	  		<img name="up_preview3" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="">
 	  		<input type="file" name="file3" onchange="fileSelected(this);" class="hidden">
@@ -137,7 +143,7 @@
 	  		<span  class="btn btn-danger hidden reUpload" >重新上传</span>
 	  	</div>
 	  </div>
-	  <div id="upImgDiv4" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px;0px;">
+	  <div id="upImgDiv4" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
 	  	<div class="col-xs-4 col-sm-4 col-md-4">
 	  		<img name="up_preview4" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="">
 	  		<input type="file" name="file4" onchange="fileSelected(this);" class="hidden">
@@ -157,7 +163,7 @@
 	  		<span  class="btn btn-danger hidden reUpload" >重新上传</span>
 	  	</div>
 	  </div>
-	  <div id="upImgDiv5" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px;0px;">
+	  <div id="upImgDiv5" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
 	  	<div class="col-xs-4 col-sm-4 col-md-4">
 	  		<img name="up_preview5" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="">
 	  		<input type="file" name="file5" onchange="fileSelected(this);" class="hidden">
@@ -178,7 +184,7 @@
 	  		<input type="hidden" name="order" value="">
 	  	</div>
 	  </div>
-	  <div id="upImgDiv6" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px;0px;">
+	  <div id="upImgDiv6" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
 	  	<div class="col-xs-4 col-sm-4 col-md-4">
 	  		<img name="up_preview6" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="">
 	  		<input type="file" name="file6" onchange="fileSelected(this);" class="hidden">
@@ -209,6 +215,20 @@
  	<input id="batchFile" type="file" multiple name="file" onchange="fileBatchSelected(this);" class="hidden">
  	<input type="hidden" name="step" value="0">
 </div>
+<!-- 修改图片 -->
+ <div id="modify_img_div" class="hidden" style="position: fixed;top:0px;height:100%;width:100;background-color: white;">
+		<div style="padding: 20px;border: 1px solid grey;">
+			<div style="border: 1px solid grey;">
+				<img  id="modify_img" src="${basePath }static/upload/sysImgs/6.jpg"
+				class="img-responsive" alt="">
+			</div>
+		</div>
+		<div>
+			<button id="modify_img_btn" class="modify_img_btn btn btn-link">更换图片</button>
+			<button id="modify_img_cancel_btn" class="modify_img_cancel_btn btn btn-link">取消</button>
+		</div>
+		<input type="file" id="modify_img_file" onchange="modifyFileSelected(this);" class="hidden">
+	</div> 
 
 <%@include file="../common/MainJS.jsp"%>
 <script type="text/javascript">
@@ -345,19 +365,6 @@ function uploadFile(file,upImgDiv,order,fileIndexOfArr) {
   xhr.addEventListener("load", function(evt){
 	  //上传完成
 	  var restResult = evt.target.responseText;
-	  //glyphicon-remove-circle
-	 /*  upImgDiv.find(".glyphicon").addClass("glyphicon-ok-circle").removeClass("glyphicon-remove-circle").addClass("show").removeClass("hidden");
-	  upImgDiv.find(".reUpload").addClass("hidden").removeClass("show");
-	  upload_complete_num ++;
-	  if(upload_complete_num >= MAX_PIC_NUM){
-		  layer.open({
-			    content: '全部上传成功'
-			    ,skin: 'msg'
-			    ,time: 2 //2秒后自动关闭
-			  });
-		  $("input[name=step]").val(3);
-		  $("#batchFileBtn").html("下一步");
-	  } */
   }, false);
   xhr.addEventListener("error", function(evt){
 	  console.log("error:");
@@ -379,7 +386,33 @@ function uploadFile(file,upImgDiv,order,fileIndexOfArr) {
   xhr.send(fd);
 }
 
+var $imgEdit = null;
+
+function showModifyImgDiv(){
+	$("#modify_img_div").addClass("show").removeClass("hidden");
+}
+function hiddenModifyImgDiv(){
+	$("#modify_img_div").addClass("hidden").removeClass("show");
+}
+
 $(function(){
+	$("#modifyBtnTest").click(function(){
+		$("#modify_img_div").addClass("show").removeClass("hidden");
+	});
+	
+	//修改图片start
+	
+	$(".imgEdit").click(function(){
+		$imgEdit =  $(this);
+		showModifyImgDiv();
+	});
+	$(".modify_img_cancel_btn").click(function(){
+		hiddenModifyImgDiv();
+	 });
+	$(".modify_img_btn").click(function(){
+		$(this).parent().next().trigger("click");
+	 });
+	//修改图片end
 	
 	$("#batchFileBtn").click(function(){
 		var step = $("input[name=step]").val();
@@ -396,6 +429,7 @@ $(function(){
 				    	startUpload();
 				    	$("#batchFileBtn").html("上传中,请耐心等待...");
 						$("#uploadingMsg").addClass("show").removeClass("hidden");
+						$("#dragOrder").addClass("show").removeClass("hidden");
 						$("#step1_div").addClass("hidden").removeClass("show");
 						$("#step2_div").addClass("show").removeClass("hidden");
 				      layer.close(index);
@@ -426,48 +460,41 @@ $(function(){
 	
 	//var el = document.getElementById('select_img_div');
 	//new Sortable(el);
-	
-	var e2 = document.getElementById('select_img_div');
-	var sortable = new Sortable(e2,{
-		//group: "name",
-	    //store: null, // @see Store
-	    //handle: ".my-handle", // 点击目标元素约束开始
-	   // draggable: ".item",   // 指定那些选项需要排序
-	    ghostClass: "sortable-ghost",
-		onStart: function (/**Event*/evt) { // 拖拽
-	        var itemEl = evt.item;
-			console.log("onStart");
-			console.log(itemEl);
-	    },
-	 
-	    onEnd: function (/**Event*/evt) { // 拖拽
-	        var itemEl = evt.item;
-	        console.log("onEnd");
-	        console.log(itemEl);
-	        var order = sortable.toArray();
-	    	console.log(order);
-	    },
-	 
-	    onAdd: function (/**Event*/evt){
-	        var itemEl = evt.item;
-	        console.log("onAdd");
-	        console.log(itemEl);
-	    },
-	 
-	    onUpdate: function (/**Event*/evt){
-	        var itemEl = evt.item; // 当前拖拽的html元素
-	        console.log("onUpdate");
-	        console.log(itemEl);
-	    },
-	 
-	    onRemove: function (/**Event*/evt){
-	        var itemEl = evt.item;
-	        console.log("onRemove");
-	        console.log(itemEl);
-	    }
+	//var e2 = document.getElementById('select_img_div');
+	var sortable = new Sortable(select_img_div, {
+		draggable: '.tile',
+		handle: '.tile__list'
 	});
+	
 });
 
+//修改图片
+function modifyFileSelected(fileInput){
+	var file = fileInput.files[0];
+	if(file){
+		var src = window.URL.createObjectURL(file);
+		$(fileInput).parent().find("img").attr("src",src);
+		$imgEdit.parent().parent().find("img").attr("src",src);
+		var index = $imgEdit.parent().parent().find("input[name=img_index]").val();
+		if(Number(index) >= 0){
+			index_2_file_arr[index] = file;
+		}else{
+			console.log("error:index必须大于等于0");
+		}
+		hiddenModifyImgDiv();
+	}
+}
+
+function refreshPageNumDiv(){
+	var pageNumDivs = $("#select_img_div").find(".pageNumDiv");
+	var tirleDivs = $("#select_img_div").find(".tile");
+	tirleDivs.each(function(i){
+		var tirleDiv = $(this);
+		if( (i +1) % 2 == 0){
+			pageNumDivs.eq(((i+1)/2)-1).insertAfter(tirleDiv);
+		}
+	});
+}
 </script>
 <script type="text/javascript" src="${basePath }static/js/Sortable.js"></script>
 </body>

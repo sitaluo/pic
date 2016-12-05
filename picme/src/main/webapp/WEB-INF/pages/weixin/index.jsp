@@ -97,13 +97,14 @@
 		 </div>
 		 <div class="col-xs-4 col-sm-4 col-md-4 textCenter height1201">
 		  	<br><img name="" src="${basePath }static/upload/sysImgs/step4.jpg" style="height:60px;width:60px;left:20px;position: ;" class=" " alt="">
-			<br>④ 支付费用<br><br>
+			<p style="color:#9D9D9D;">④ 支付费用</p>
 		 </div>
 		 <div class="col-xs-2 col-sm-2 col-md-2"></div>
 	 </div>
 </div>
 <a href="${basePath }/weixin/order/payType?albumId=261&addressId=2">支付页面test</a>
-<a href="${basePath }/weixin/address/list?albumId=262">地址</a>
+<a href="${basePath }/weixin/address/list?albumId=262">地址</a><br>
+<a href="${basePath }/weixin/testsort">排序</a>
 
 <div style="height:70px;" class="col-xs-12 col-sm-12 col-md-12">
 </div>

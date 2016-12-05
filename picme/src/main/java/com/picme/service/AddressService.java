@@ -35,6 +35,13 @@ public class AddressService {
 		addressMapper.deleteByPrimaryKey(record.getId());
 	}
 	
+	public void deleteById(Integer addressId) throws Exception{
+		if(addressId == null){
+			return;
+		}
+		addressMapper.deleteByPrimaryKey(addressId);
+	}
+	
 	public void save(Address record) throws Exception{
 		if(record.getId() != null){
 			addressMapper.updateByPrimaryKeySelective(record);

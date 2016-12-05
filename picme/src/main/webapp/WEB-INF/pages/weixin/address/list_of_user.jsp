@@ -20,6 +20,11 @@
 <body class="" id="body">
 <div class="" style="padding:10px;">
 	<img src="${basePath }static/upload/sysImgs/Rectangle.png" style="height:16px;"> 快递信息
+	<span class="pull-right" id="addAddressBtn">
+		<img name="" src="${basePath }static/upload/sysImgs/ic_add_box.png" style="height:16px;width:16px;" 
+		  		class="">
+		添加新地址
+	</span>
   </div>
 <div id="container" class="container" >
   <hr class="col-xs-12 col-sm-12 col-md-12 ">
@@ -49,18 +54,26 @@
 			  	 		</div>
 			  	 </div>
 			  	 <div class="col-xs-2 col-sm-2 col-md-2"><br>
-			  	 		<div class="checkbox"> <label><input type="radio" name="radio_address_id" value="${item.id }"></label></div>
-			 		 </div>
+		  	 		<div class="">
+		  	 		 	<label>
+		  	 		 	<img name="blue" class="hidden" src="${basePath }static/upload/sysImgs/ic_check_circle_blue.png" style="height:16px;width:16px;" >
+		  	 		 	<img name="gray" src="${basePath }static/upload/sysImgs/ic_check_circle_gray.png" style="height:16px;width:16px;" >
+		  	 		 	<input type="radio" name="radio_address_id" value="${item.id }" class="hidden"></label>
+		  	 		 </div>
+			 	 </div>
 			  </div>
 			  <hr class="col-xs-12 col-sm-12 col-md-12" style="margin: 10px 0px;">
 		</c:forEach>
 	 </div> 
-	<div class="col-xs-12 col-sm-12 col-md-12" style="position: fixed;top:auto; left: auto; right: auto;  bottom: 0px;padding: 0px;">
- 		<button id="addAddressBtn" type="button" class="btn btn-primary col-xs-6 col-sm-6 col-md-6" style="border-radius:0px;">添加新地址</button>
+	<!-- <div class="col-xs-12 col-sm-12 col-md-12" style="position: fixed;top:auto; left: auto; right: auto;  bottom: 0px;padding: 0px;">
 		<button id="next" type="button" class="btn btn-primary col-xs-6 col-sm-6 col-md-6" style="border-radius:0px;">下一步</button>
-	</div>
+	</div> -->
 </div>
 
+<div class="col-xs-12 col-sm-12 col-md-12" style="height:50px;"></div>
+<div class="col-xs-12 col-sm-12 col-md-12" style="position: fixed;top:auto; left: auto; right: auto;  bottom: 0px;padding: 0px;">
+	<button class="btn btn-primary btn-lg col-xs-12 col-sm-12 col-md-12" id="next" style="border-radius:0px;"> 下一步  </button>	
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -125,14 +138,59 @@ $(function(){
 		}
 	});
 	$("#addAddressBtn").click(function(){
-		$("#myModal").modal("show");
+		var showDiv = $("#myModal");
+		showDiv.find("input[name=addressId]").val("");
+		showDiv.find("input[name=person]").val("");
+		showDiv.find("input[name=region]").val("");
+		showDiv.find("input[name=phone]").val("");
+		showDiv.modal("show");
 	});
 	$("#saveAddressBtn").click(function(){
 		$(this).val("保存...");
 		submitForm($(this));
 	});
 	
-	$("input[name=deleteBtn]").click(function(){
+	$("button[name=deleteBtn]").click(function(){
+		var thisBtn = $(this);
+		var addressId = $(this).parent("div").children("input[name=addressId]").val();
+		 layer.open({
+		    content: '您确定要删除吗？'
+		    ,btn: ['删除', '取消']
+		    ,yes: function(index2){
+		    	var index = layer.open({type: 2});
+				var param = "addressId=" + addressId;
+				$.ajax({
+					type : "POST",
+					data : param,
+					dataType : "json",
+					url : "${basePath }/weixin/address/delete",
+					success : function(resp, textStatus) {
+						layer.close(index2);
+						if (1 == resp.ret_flag) {
+							//window.location.reload();
+							var parentTrDiv = thisBtn.parent().parent().parent();
+							parentTrDiv.next("hr").remove();
+							parentTrDiv.remove();
+							layer.close(index);
+							 layer.open({
+								    content: '删除成功'
+								    ,skin: 'msg'
+								    ,time: 2 //2秒后自动关闭
+								  });
+						} else {
+							layer.close(index);
+							layer.alert(resp.ret_msg);
+						}
+					},
+					error : function(request, textStatus, errorThrown) {
+						layer.close(index);
+						layer.close(index2);
+						
+					}
+				});
+		    }
+		  });
+		
 		
 	});
 	
@@ -160,6 +218,18 @@ $(function(){
 			alert("请选择一个地址");
 		}
 	});
+	
+	$("input[name=radio_address_id]").click(function(){
+		var checked = $(this).prop("checked");	
+		if(checked == true){
+			$("img[name=blue]").addClass("hidden").removeClass("show");
+			$("img[name=gray]").addClass("show").removeClass("hidden");
+			$(this).parent().children("img[name=blue]").addClass("show").removeClass("hidden");
+			$(this).parent().children("img[name=gray]").addClass("hidden").removeClass("show");
+		}
+		
+	});
+	
 });
 
 //保存地址
