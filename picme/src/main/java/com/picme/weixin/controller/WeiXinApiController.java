@@ -9,17 +9,20 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.picme.common.BusinessNoUtils;
 import com.picme.common.Constants;
 import com.picme.common.JsApiSign;
+import com.picme.common.RestResult;
 import com.picme.common.WeiXinApiUtils;
 import com.picme.entity.PhotoAlbum;
 import com.picme.entity.User;
 import com.picme.service.PhotoAlbumService;
 import com.picme.service.UserService;
 import com.picme.weixin.entity.WeiXinUser;
+import com.picme.weixin.vo.UserParam;
 
 @Controller
 @RequestMapping(value="weixin")
@@ -43,19 +46,50 @@ public class WeiXinApiController {
 	public ModelAndView code(String code, String state,HttpSession session,HttpServletRequest request) throws Exception {
 		ModelAndView mv = new ModelAndView("weixin/index");
 		//根据code获得微信用户信息
-		WeiXinUser weiXinUser = WeiXinApiUtils.getWeiXinUserInfo(code);
+		/*WeiXinUser weiXinUser = WeiXinApiUtils.getWeiXinUserInfo(code);
 		User user = userService.fromWeiXinUser(weiXinUser);
 		mv.addObject("weiXinUser",weiXinUser);
 		if(user == null ){
 			user = userService.getById(1);//TODO 删除
 		}
-		session.setAttribute(Constants.CURRENT_USER_KEY, user);
+		session.setAttribute(Constants.CURRENT_USER_KEY, user);*/
 		
-		Map<String,String> jsApiSign = JsApiSign.sign( request.getRequestURL().toString());
-		
-		session.setAttribute("jsApiSign", jsApiSign);
+		//Map<String,String> jsApiSign = JsApiSign.sign( request.getRequestURL().toString());
+		//session.setAttribute("jsApiSign", jsApiSign);
 		return mv;
 	}	
+	
+	@RequestMapping("/register" )   
+    public ModelAndView register() { 
+		ModelAndView mv = new ModelAndView("weixin/register");
+        return mv; 
+    }
+	
+	@ResponseBody
+	@RequestMapping("saveUser")
+	public RestResult<Object> saveUser(HttpSession session,UserParam param){
+		RestResult<Object> ret= new RestResult<Object>();
+		try {
+			User user = userService.getByPhone(param.getPhone());
+			if(user != null){
+				if(param.getWeixinNum() != null){
+					user.setWeixinNum(param.getWeixinNum());
+				}
+				if(param.getName() != null){
+					user.setName(param.getName());
+				}
+				userService.save(user);
+			}else{
+				userService.save(param);
+				user = param;
+			}
+			session.setAttribute(Constants.CURRENT_USER_KEY, user);
+		} catch (Exception e) {
+			ret.markAsfailed();
+			e.printStackTrace();
+		}
+		return ret;
+	}
 	
 	@RequestMapping("/selectCover" )   
     public ModelAndView toUpload(HttpServletRequest request) { 
@@ -82,8 +116,8 @@ public class WeiXinApiController {
 		album.setPrice(new BigDecimal(188));//TODO
 		photoAlbumService.save(album);
 		
-		Map<String,String> jsApiSign = JsApiSign.sign(request.getRequestURL().toString()+"?"+request.getQueryString());
-		mv.addObject("jsApiSign", jsApiSign);
+		//Map<String,String> jsApiSign = JsApiSign.sign(request.getRequestURL().toString()+"?"+request.getQueryString());
+		//mv.addObject("jsApiSign", jsApiSign);
 		mv.addObject("coverImg",coverImg);
 		mv.addObject("album",album);
         return mv; 

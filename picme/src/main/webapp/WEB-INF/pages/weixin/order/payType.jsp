@@ -46,7 +46,7 @@
 	  </div>
 	</div>
 	<div class="row" style="text-align: center;">
-		<img name="" src="${basePath }static/upload/sysImgs/weixinpay0.1.png"
+		<img name="" src="${basePath }static/upload/sysImgs/weixinpay188.jpg"
 	  		class="img-responsive" style="height:200px;margin: 0px auto;">
 	</div>
 	<div class="row">
@@ -54,7 +54,8 @@
 	  	<p>长按二维码支付</p>
 	  </div>
 	</div>
-	<br><br>
+	<br>
+	<p style="color:#9D9D9D;">支付完成后选择已支付</p>
 	<div class="row col-xs-12 col-sm-12 col-md-12" style="text-align: center;">
 		<input name="orderId" type="hidden" value="${order.id }">
 		<input name="albumId" type="hidden" value="${order.albumId }">

@@ -6,6 +6,7 @@ public class UploadParam {
 	private Integer userId;
 	private Integer albumId;
 	private String openId;
+	private Integer order;
 	
 	public String getOpenId() {
 		return openId;
@@ -30,6 +31,12 @@ public class UploadParam {
 	}
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	public Integer getOrder() {
+		return order;
+	}
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 	
 }

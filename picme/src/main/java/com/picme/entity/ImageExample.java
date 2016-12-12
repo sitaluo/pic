@@ -504,6 +504,66 @@ public class ImageExample {
             return (Criteria) this;
         }
 
+        public Criteria andOrdIsNull() {
+            addCriterion("ord is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrdIsNotNull() {
+            addCriterion("ord is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrdEqualTo(Integer value) {
+            addCriterion("ord =", value, "ord");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrdNotEqualTo(Integer value) {
+            addCriterion("ord <>", value, "ord");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrdGreaterThan(Integer value) {
+            addCriterion("ord >", value, "ord");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("ord >=", value, "ord");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrdLessThan(Integer value) {
+            addCriterion("ord <", value, "ord");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrdLessThanOrEqualTo(Integer value) {
+            addCriterion("ord <=", value, "ord");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrdIn(List<Integer> values) {
+            addCriterion("ord in", values, "ord");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrdNotIn(List<Integer> values) {
+            addCriterion("ord not in", values, "ord");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrdBetween(Integer value1, Integer value2) {
+            addCriterion("ord between", value1, value2, "ord");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrdNotBetween(Integer value1, Integer value2) {
+            addCriterion("ord not between", value1, value2, "ord");
+            return (Criteria) this;
+        }
+
         public Criteria andPathLikeInsensitive(String value) {
             addCriterion("upper(path) like", value.toUpperCase(), "path");
             return (Criteria) this;

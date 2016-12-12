@@ -109,7 +109,7 @@ public class DownloadController {
 			bos.close();
 			bis.close();
 			
-			imageService.addAlbum(dbFileName, userId,albumId);
+			//imageService.addAlbum(dbFileName, userId,albumId);
             logger.debug("微信图片下载并上传到服务器成功:"+ dbFileName); 
 			return file;
 		} catch (MalformedURLException e) {

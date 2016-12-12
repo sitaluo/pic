@@ -19,6 +19,7 @@
 <%
 //String encode_url = java.net.URLEncoder.encode("http://beanbean.applinzi.com/weixin/code");
 String encode_url = java.net.URLEncoder.encode("http://beanbean.tunnel.qydev.com/picme/weixin/code");
+
 %>
 <br>
 ${current_user.nickName }

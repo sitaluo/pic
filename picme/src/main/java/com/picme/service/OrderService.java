@@ -34,9 +34,14 @@ public class OrderService {
 		orderMapper.updateByPrimaryKey(record);
 	}
 	
+	public void updateByPrimaryKeySelective(Order record){
+		orderMapper.updateByPrimaryKeySelective(record);
+	}
+	
 	public void delete(Order record) throws Exception{
 		orderMapper.deleteByPrimaryKey(record.getId());
 	}
+	
 	
 	public void save(Order record) throws Exception{
 		if(record.getId() != null){

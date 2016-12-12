@@ -125,12 +125,17 @@
 			</div>
 
 		</div>
-
-<div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
+		
+<div style="height:70px;" class="col-xs-12 col-sm-12 col-md-12">
+</div>
+<!-- <div class="col-xs-12 col-sm-12 col-md-12" style="padding: 0px;">
 	<br>
 	<button class="btn btn-primary btn-lg col-xs-12 col-sm-12 col-md-12" id="next" style="border-radius:0px;"> 下一步 </button>	
-</div>
+</div> -->
 
+<div class="col-xs-12 col-sm-12 col-md-12 textCenter" style="position: fixed;top:auto; left: auto; right: auto;  bottom: 0px;padding: 0px;">
+	  <button class="btn btn-primary btn-lg col-xs-12 col-sm-12 col-md-12" id="next" style="border-radius:0px;"> 下一步  </button>	
+</div>
 
 <%@ include file="../common/MainJS.jsp"%>
 <script src="${staticPath }/bootstrap-3.3.0/carousel.js"></script>

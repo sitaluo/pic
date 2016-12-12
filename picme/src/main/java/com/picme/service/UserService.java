@@ -79,6 +79,17 @@ public class UserService {
 		return null;
 	}
 	
+	public User getByPhone(String phone){
+		UserExample example = new UserExample();
+		UserExample.Criteria cri = example.createCriteria();
+		cri.andPhoneEqualTo(phone);
+		List<User> userList = userMapper.selectByExample(example);
+		if(userList != null &&  userList.size() > 0){
+			return userList.get(0);
+		}
+		return null;
+	}
+	
 	public User getByOpenId(String openId){
 		if(openId == null){
 			return null;

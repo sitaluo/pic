@@ -38,6 +38,7 @@
   </c:if>
 	
 	<div class="row margin0px">
+		<fmt:formatNumber var="size" value="${fn:length(addressList)}"></fmt:formatNumber>
 		<c:forEach items="${addressList }" var="item">
 			<div class="col-xs-12 col-sm-12 col-md-12 ">
 			  	 <div class="col-xs-10 col-sm-10 col-md-10" style="padding-right: 10px;border-right: 1px solid #D9D9D9;">
@@ -55,10 +56,20 @@
 			  	 </div>
 			  	 <div class="col-xs-2 col-sm-2 col-md-2"><br>
 		  	 		<div class="">
-		  	 		 	<label>
-		  	 		 	<img name="blue" class="hidden" src="${basePath }static/upload/sysImgs/ic_check_circle_blue.png" style="height:16px;width:16px;" >
-		  	 		 	<img name="gray" src="${basePath }static/upload/sysImgs/ic_check_circle_gray.png" style="height:16px;width:16px;" >
-		  	 		 	<input type="radio" name="radio_address_id" value="${item.id }" class="hidden"></label>
+		  	 		 	<label style="margin-left: 20px;">
+		  	 		 	<c:choose>
+		  	 		 		<c:when test="${ (size eq 1) or (item.id eq current_user.defaultAddressId) }">
+			  	 		 		<img name="blue" class="" src="${basePath }static/upload/sysImgs/ic_check_circle_blue.png" style="height:16px;width:16px;" >
+			  	 		 		<img name="gray" class="hidden" src="${basePath }static/upload/sysImgs/ic_check_circle_gray.png" style="height:16px;width:16px;" >
+			  	 		 		<input type="radio" checked="checked" name="radio_address_id" value="${item.id }" class="hidden">
+		  	 		 		</c:when>
+		  	 		 		<c:otherwise>
+			  	 		 		<img name="blue" class="hidden" src="${basePath }static/upload/sysImgs/ic_check_circle_blue.png" style="height:16px;width:16px;" >
+			  	 		 		<img name="gray" src="${basePath }static/upload/sysImgs/ic_check_circle_gray.png" style="height:16px;width:16px;" >
+			  	 		 		<input type="radio" name="radio_address_id" value="${item.id }" class="hidden">
+		  	 		 		</c:otherwise>
+		  	 		 	</c:choose>
+		  	 		 	</label>
 		  	 		 </div>
 			 	 </div>
 			  </div>
@@ -215,7 +226,11 @@ $(function(){
 		if(addressId > 0){
 			window.location.href = basePath + "weixin/order/payType?albumId=${albumId}" + "&addressId=" + addressId;
 		}else{
-			alert("请选择一个地址");
+			layer.open({
+			    content: '请选择一个地址'
+			    ,skin: 'msg'
+			    ,time: 1 //2秒后自动关闭
+			  });
 		}
 	});
 	

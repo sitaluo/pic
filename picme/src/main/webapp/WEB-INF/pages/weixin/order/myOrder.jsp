@@ -12,6 +12,13 @@
 	<img src="${basePath }static/upload/sysImgs/Rectangle.png" style="height:16px;"> 我的订单
   </div>
 <div id="container" class="container" >
+	 <form role="form" id="form">
+	  <div class="form-group">
+	    <label for="phone">输入手机号查询订单</label>
+	    <input type="text" class="form-control" name="phone" id="phone" placeholder="手机号">
+	    <button class="btn btn-primary" type="submit">查询</button>
+	  </div>
+	</form>
   <hr class="col-xs-12 col-sm-12 col-md-12 ">
   <c:if test="${empty orderList }">
  	 <div class="row">

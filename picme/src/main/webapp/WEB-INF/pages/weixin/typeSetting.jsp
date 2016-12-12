@@ -59,9 +59,9 @@
 	<hr>
 	<div class="row col-xs-12 col-sm-12 col-md-12 select_img_div" id="select_img_div" style="margin: 0px 0px;padding:10px;">
 		
-		<c:forTokens items="1,2,3,4,5,6" delims="," var="item" varStatus="i">
+		<c:forTokens items="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24" delims="," var="item" varStatus="i">
 		   <div class="tile col-xs-6 col-sm-6 col-md-6 marging15px " style="padding: 10px 10px;height:200px;">
-				<div class="tile__name"><span class="glyphicon glyphicon-edit imgEdit"></span></div>
+				<div class="tile__name" ><span class="glyphicon glyphicon-edit imgEdit"></span></div>
 				<div class="tile__list" style="height:inherit;padding-bottom: 20px;display:table;vertical-align:middle;max-height:180px;width:100%;">
 					<span style="display:table-cell;vertical-align:middle;height:180px;width:0px;padding-bottom: 20px;">
 						<img name="preview1 " src="${basePath }static/upload/sysImgs/noimg.png"
@@ -81,11 +81,11 @@
 	
 <div id="step2_div" class="hidden">
 	<div class="" id="upload_img_div">
-	  
-	  <div id="upImgDiv1" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
-	  	<div class="col-xs-4 col-sm-4 col-md-4">
-	  		<img name="up_preview1" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="">
-	  		<input type="file" multiple name="file1" onchange="fileSelected(this);" class="hidden">
+	  <c:forTokens items="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24" delims="," var="item" varStatus="i">
+	  <div id="upImgDiv${item }" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
+	  	<div class="col-xs-4 col-sm-4 col-md-4" >
+	  		<img name="up_preview1" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="" style="max-height:100px;">
+	  		<input type="file" multiple name="file1" onchange="fileSelected(this);" class="hidden" >
 	  	</div>
 	  	<div class="col-xs-6 col-sm-6 col-md-6 col-xs-offset-4" style="position: absolute;top:40%;">
 	  			<div class="progress" id="progress1">
@@ -93,117 +93,18 @@
 				    <span class="" style="min-width:20px;">0% </span>
 				  </div>
 				</div>
-				<div class="fileSize col-xs-2 col-sm-2 col-md-2"></div>
+				<!-- <div class="fileSize col-xs-2 col-sm-2 col-md-2"></div> -->
 	  	</div>
 	  	<div class="col-xs-2 col-sm-2 col-md-2 col-xs-offset-10" style="position: absolute;top:40%;"> 
-	  		<span class="glyphicon glyphicon-ok hidden"></span>
+	  		<span class="glyphicon glyphicon-ok-circle hidden" style="color:green;"></span>
+	  		<span class="glyphicon glyphicon-remove-circle hidden" style="color:red;"></span>
 	  		<input type="hidden" name="fileIndexOfArr" value="">
 	  		<input type="hidden" name="order" value="">
-	  		<span  class="btn btn-danger hidden reUpload" >重新上传</span>
+	  		<!-- <span  class="btn btn-danger hidden reUpload" >重新上传</span> -->
+	  		<span class="glyphicon glyphicon-repeat hidden reUpload" style="color:blue;"></span>
 	  	</div>
 	  </div>
-	  
-	  <div  id="upImgDiv2" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
-	  	<div class="col-xs-4 col-sm-4 col-md-4">
-	  		<img name="up_preview2" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="">
-	  		<input type="file" multiple="multiple" name="file2" onchange="fileSelected(this);" class="hidden">
-	  	</div>
-	  	<div class="col-xs-6 col-sm-6 col-md-6 col-xs-offset-4" style="position: absolute;top:40%;">
-	  			<div class="progress" id="progress2">
-				  <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-				    <span class="" style="min-width:20px;">0% </span>
-				  </div>
-				</div>
-				<div class="fileSize col-xs-12 col-sm-12 col-md-12"></div>
-	  	</div>
-	  	<div class="col-xs-2 col-sm-2 col-md-2 col-xs-offset-10" style="position: absolute;top:40%;"> 
-	  		<span class="glyphicon glyphicon-ok-circle hidden"></span>
-	  		<input type="hidden" name="fileIndexOfArr" value="">
-	  		<input type="hidden" name="order" value="">
-	  		<span  class="btn btn-danger hidden reUpload" >重新上传</span>
-	  	</div>
-	  </div>
-	  <div id="upImgDiv3" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
-	  	<div class="col-xs-4 col-sm-4 col-md-4">
-	  		<img name="up_preview3" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="">
-	  		<input type="file" name="file3" onchange="fileSelected(this);" class="hidden">
-	  	</div>
-	  	<div class="col-xs-6 col-sm-6 col-md-6 col-xs-offset-4" style="position: absolute;top:40%;">
-	  			<div class="progress" id="progress3">
-				  <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-				    <span class="" style="min-width:20px;">0% </span>
-				  </div>
-				</div>
-				<div class="fileSize col-xs-2 col-sm-2 col-md-2"></div>
-	  	</div>
-	  	<div class="col-xs-2 col-sm-2 col-md-2 col-xs-offset-10" style="position: absolute;top:40%;"> 
-	  		<span class="glyphicon glyphicon-ok-circle hidden"></span>
-	  		<input type="hidden" name="fileIndexOfArr" value="">
-	  		<input type="hidden" name="order" value="">
-	  		<span  class="btn btn-danger hidden reUpload" >重新上传</span>
-	  	</div>
-	  </div>
-	  <div id="upImgDiv4" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
-	  	<div class="col-xs-4 col-sm-4 col-md-4">
-	  		<img name="up_preview4" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="">
-	  		<input type="file" name="file4" onchange="fileSelected(this);" class="hidden">
-	  	</div>
-	  	<div class="col-xs-6 col-sm-6 col-md-6 col-xs-offset-4" style="position: absolute;top:40%;">
-	  		<div class="progress" id="progress4">
-				  <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-				    <span class="" style="min-width:20px;">0% </span>
-				  </div>
-				</div>
-				<div class="fileSize col-xs-2 col-sm-2 col-md-2"></div>
-	  	</div>
-	  	<div class="col-xs-2 col-sm-2 col-md-2 col-xs-offset-10" style="position: absolute;top:40%;"> 
-	  		<span class="glyphicon glyphicon-ok-circle hidden"></span>
-	  		<input type="hidden" name="fileIndexOfArr" value="">
-	  		<input type="hidden" name="order" value="">
-	  		<span  class="btn btn-danger hidden reUpload" >重新上传</span>
-	  	</div>
-	  </div>
-	  <div id="upImgDiv5" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
-	  	<div class="col-xs-4 col-sm-4 col-md-4">
-	  		<img name="up_preview5" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="">
-	  		<input type="file" name="file5" onchange="fileSelected(this);" class="hidden">
-	  	</div>
-	  	<div class="col-xs-6 col-sm-6 col-md-6 col-xs-offset-4" style="position: absolute;top:40%;">
-	  		<div class="progress" id="progress5">
-				  <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-				    <span class="" style="min-width:20px;">0% </span>
-				  </div>
-				</div><div class="col-xs-2 col-sm-2 col-md-2">
-					<span class="fileSize"></span>&nbsp;
-					<span class="btn btn-danger btn-xs hidden reUpload" >重新上传</span>
-				</div>
-	  	</div>
-	  	<div class="col-xs-2 col-sm-2 col-md-2 col-xs-offset-10" style="position: absolute;top:40%;"> 
-	  		<span class="glyphicon glyphicon-ok-circle hidden"></span>
-	  		<input type="hidden" name="fileIndexOfArr" value="">
-	  		<input type="hidden" name="order" value="">
-	  	</div>
-	  </div>
-	  <div id="upImgDiv6" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
-	  	<div class="col-xs-4 col-sm-4 col-md-4">
-	  		<img name="up_preview6" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="">
-	  		<input type="file" name="file6" onchange="fileSelected(this);" class="hidden">
-	  	</div>
-	  	<div class="col-xs-6 col-sm-6 col-md-6 col-xs-offset-4" style="position: absolute;top:40%;">
-	  		<div class="progress" id="progress6">
-				  <div class="progress-bar progress-bar-info progress-bar-striped" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
-				    <span class="" style="min-width:20px;">0% </span>
-				  </div>
-			</div>
-			<div class="fileSize col-xs-2 col-sm-2 col-md-2"></div>
-	  	</div>
-	  	<div class="col-xs-2 col-sm-2 col-md-2 col-xs-offset-10" style="position: absolute;top:40%;"> 
-	  		<span class="glyphicon glyphicon-ok-circle hidden"></span>
-	  		<input type="hidden" name="fileIndexOfArr" value="">
-	  		<input type="hidden" name="order" value="">
-	  		<span  class="btn btn-danger hidden reUpload" >重新上传</span>
-	  	</div>
-	  </div>
+	  </c:forTokens>
 	  
 	</div>	  
 	  
@@ -211,7 +112,7 @@
 <div class="col-xs-12 col-sm-12 col-md-12" style="height:50px;"></div>
 
 <div class="col-xs-12 col-sm-12 col-md-12" style="position: fixed;top:auto; left: auto; right: auto;  bottom: 0px;padding: 0px;">
-	<button class="btn btn-primary btn-lg col-xs-12 col-sm-12 col-md-12" id="batchFileBtn" style="border-radius:0px;"> 添加图片(0/6)  </button>	
+	<button class="btn btn-primary btn-lg col-xs-12 col-sm-12 col-md-12" id="batchFileBtn" style="border-radius:0px;"> 添加图片(0/24)  </button>	
  	<input id="batchFile" type="file" multiple name="file" onchange="fileBatchSelected(this);" class="hidden">
  	<input type="hidden" name="step" value="0">
 </div>
@@ -232,7 +133,7 @@
 
 <%@include file="../common/MainJS.jsp"%>
 <script type="text/javascript">
-var MAX_PIC_NUM = 6;
+var MAX_PIC_NUM = 24;
 var have_num = 0;
 var index_2_file_arr = new Array();
 
@@ -299,10 +200,17 @@ function startUpload(){
 	
 	
 }
+function GetRandomNum(Min,Max)
+{   
+var Range = Max - Min;   
+var Rand = Math.random();   
+return(Min + Math.round(Rand * Range));   
+}   
 
 function uploadFile(file,upImgDiv,order,fileIndexOfArr) {
-	
-	if (file) {
+	upImgDiv.find("input[name=fileIndexOfArr]").val(fileIndexOfArr);
+	upImgDiv.find("input[name=order]").val(order);
+	/* if (file) {
         var fileSize = 0;
         if (file.size > 1024 * 1024)
           fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
@@ -310,7 +218,7 @@ function uploadFile(file,upImgDiv,order,fileIndexOfArr) {
           fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
         upImgDiv.find(".fileSize").html(fileSize);
         //文件大小
-	}
+	} */
 	
 	//显示预览图
 	var previewSrc = window.URL.createObjectURL(file)
@@ -333,6 +241,11 @@ function uploadFile(file,upImgDiv,order,fileIndexOfArr) {
   var xhr = new XMLHttpRequest();
   xhr.upload.addEventListener("progress", function(evt){
 	  //上传进度
+	  console.log("上传进度");
+	  console.log(evt);
+	  var restResult = evt.target.responseText;
+	  console.log(restResult);
+	  
 	  if (evt.lengthComputable) {
 	      var percentComplete = Math.round(evt.loaded * 100 / evt.total);
 	      //document.getElementById('progressNumber').innerHTML = percentComplete.toString() + '%';
@@ -341,46 +254,79 @@ function uploadFile(file,upImgDiv,order,fileIndexOfArr) {
 	      divPro.children("span").html(percentComplete.toString() + '%');
 	      
 	      if("100" == percentComplete.toString()){
-	    	  //上传完成
-	    	  upImgDiv.find(".glyphicon").addClass("glyphicon-ok-circle").removeClass("glyphicon-remove-circle").addClass("show").removeClass("hidden");
-	    	  upImgDiv.find(".reUpload").addClass("hidden").removeClass("show");
-	    	  upload_complete_num ++;
-	    	  if(upload_complete_num >= MAX_PIC_NUM){
-	    		  layer.open({
-	    			    content: '全部上传成功'
-	    			    ,skin: 'msg'
-	    			    ,time: 2 //2秒后自动关闭
-	    			  });
-	    		  $("input[name=step]").val(3);
-	    		  $("#batchFileBtn").html("下一步");
-	    	  }
+	    	  //var num = GetRandomNum(1,10); 
+	    	  //模拟失败重新上传
+	    	  //if(num > 5){
+	    	//	  upImgDiv.find(".glyphicon-remove-circle").addClass("show").removeClass("hidden");
+	    	//	  upImgDiv.find(".reUpload").addClass("show").removeClass("hidden");
+	    	  //}else{
+		    	  //上传完成
+		    	  upImgDiv.find(".glyphicon-ok-circle").addClass("show").removeClass("hidden");
+		    	  upImgDiv.find(".glyphicon-remove-circle").addClass("hidden").removeClass("show");
+		    	  upImgDiv.find(".reUpload").addClass("hidden").removeClass("show");
+		    	  upload_complete_num ++;
+		    	  if(upload_complete_num >= MAX_PIC_NUM){
+		    		  layer.open({
+		    			    content: '全部上传成功'
+		    			    ,skin: 'msg'
+		    			    ,time: 2 //2秒后自动关闭
+		    			  });
+		    		  $("input[name=step]").val(3);
+		    		  $("#batchFileBtn").html("下一步");
+		    	  }
+	    	  //}
 	    	  
 	      }
 	      
 	    }
 	    else {
 	      //document.getElementById('progressNumber').innerHTML = 'unable to compute';
+	      upImgDiv.find(".glyphicon-remove-circle").addClass("show").removeClass("hidden");
+	      upImgDiv.find(".glyphicon-ok-circle").addClass("hidden").removeClass("show");
+	   	  upImgDiv.find(".reUpload").addClass("show").removeClass("hidden");
 	    }
   }, false);
   xhr.addEventListener("load", function(evt){
 	  //上传完成
+	  console.log("上传完成");
 	  var restResult = evt.target.responseText;
+	  console.log(restResult);
+	  var resultObj = eval("("+restResult+")");
+	  if(resultObj.ret_flag == 1){
+		  
+	  }else{
+		  upImgDiv.find(".glyphicon-remove-circle").addClass("show").removeClass("hidden");
+	   	  upImgDiv.find(".reUpload").addClass("show").removeClass("hidden");
+	   	  upImgDiv.find(".glyphicon-ok-circle").addClass("hidden").removeClass("show");
+	  }
   }, false);
   xhr.addEventListener("error", function(evt){
 	  console.log("error:");
 	  console.log(evt);
+	  var restResult = evt.target.responseText;
+	  console.log(restResult);
 	  //上传失败
 	  // alert("There was an error attempting to upload the file.");
-	  upImgDiv.find(".glyphicon").addClass("glyphicon-remove-circle").removeClass("glyphicon-ok-circle").addClass("show").removeClass("hidden");
+	  upImgDiv.find(".glyphicon-remove-circle").addClass("show").removeClass("hidden");
 	  upImgDiv.find(".reUpload").addClass("show").removeClass("hidden");
+	  upImgDiv.find(".glyphicon-ok-circle").addClass("hidden").removeClass("show");
+  }, false);
+  xhr.addEventListener("timeout", function(evt){
+	  console.log("timeout:");
+	  upImgDiv.find(".glyphicon-remove-circle").addClass("show").removeClass("hidden");
+	  upImgDiv.find(".reUpload").addClass("show").removeClass("hidden");
+	  upImgDiv.find(".glyphicon-ok-circle").addClass("hidden").removeClass("show");
   }, false);
   xhr.addEventListener("abort", function(evt){
 	  //上传被取消了
 	  console.log("abort:");
 	  console.log(evt);
+	  var restResult = evt.target.responseText;
+	  console.log(restResult);
 	  //alert("The upload has been canceled by the user or the browser dropped the connection.");
-	  upImgDiv.find(".glyphicon").addClass("glyphicon-remove-circle").removeClass("glyphicon-ok-circle").addClass("show").removeClass("hidden");
+	  upImgDiv.find(".glyphicon-remove-circle").addClass("show").removeClass("hidden");
 	  upImgDiv.find(".reUpload").addClass("show").removeClass("hidden");
+	  upImgDiv.find(".glyphicon-ok-circle").addClass("hidden").removeClass("show");
   }, false);
   xhr.open("POST", "${basePath }file/upload2");
   xhr.send(fd);
@@ -431,6 +377,7 @@ $(function(){
 						$("#uploadingMsg").addClass("show").removeClass("hidden");
 						$("#dragOrder").addClass("show").removeClass("hidden");
 						$("#step1_div").addClass("hidden").removeClass("show");
+						$("#dragOrder").addClass("hidden").removeClass("show");
 						$("#step2_div").addClass("show").removeClass("hidden");
 				      layer.close(index);
 				      $("input[name=step]").val(2);
@@ -474,7 +421,13 @@ function modifyFileSelected(fileInput){
 	if(file){
 		var src = window.URL.createObjectURL(file);
 		$(fileInput).parent().find("img").attr("src",src);
-		$imgEdit.parent().parent().find("img").attr("src",src);
+		var preImg = $imgEdit.parent().parent().find("img");
+		preImg.attr("src",src);
+		if(preImg.hasClass("noPreImg")){
+			preImg.removeClass("noPreImg");
+			have_num = have_num + 1;
+			$("#batchFileBtn").html("添加图片("+have_num + "/" + MAX_PIC_NUM + ")");
+		}
 		var index = $imgEdit.parent().parent().find("input[name=img_index]").val();
 		if(Number(index) >= 0){
 			index_2_file_arr[index] = file;

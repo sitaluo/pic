@@ -1,7 +1,10 @@
 package com.picme.weixin.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,6 +20,8 @@ import com.picme.entity.PhotoAlbum;
 import com.picme.entity.User;
 import com.picme.service.OrderService;
 import com.picme.service.PhotoAlbumService;
+import com.picme.service.UserService;
+import com.picme.weixin.vo.OrderParam;
 
 @Controller
 @RequestMapping(value="weixin/order")
@@ -26,6 +31,8 @@ public class OrderController {
 	private OrderService orderService;
 	@Autowired
 	private PhotoAlbumService photoAlbumService;
+	@Autowired
+	private UserService userService;
 	/**
 	 * 支付选择 新建订单
 	 * @param request
@@ -56,8 +63,9 @@ public class OrderController {
 			order.setOrderNo(BusinessNoUtils.getCommonBusinessNo());
 			order.setGoodsType(Constants.GoodsType.PHOTO_ALBUM);
 			order.setNum(num);
-			order.setState(Constants.OrderState.NO_PAY);
+			order.setState(Constants.AlbumOrderState.NO_PAY.getVal());
 			order.setTotalPrice(new BigDecimal(totalPrice));
+			order.setCreateTime(new Date());
 			orderService.save(order);
 		}
 		mv.addObject("order",order);
@@ -75,15 +83,24 @@ public class OrderController {
 		ModelAndView mv = new ModelAndView("weixin/order/sure");
 		mv.addObject("orderId",orderId);
 		mv.addObject("albumId",albumId);
+		Order o = new Order();
+		o.setId(orderId);
+		o.setState(Constants.AlbumOrderState.TO_SURE.getVal());
+		orderService.updateByPrimaryKeySelective(o);
 		mv.addObject("paySuccess",paySuccess);
         return mv; 
     }
 	
 	@RequestMapping("/myOrder")  
-    public ModelAndView myOrder(HttpServletRequest request) throws Exception { 
+    public ModelAndView myOrder(HttpServletRequest request,OrderParam param) throws Exception { 
 		ModelAndView mv = new ModelAndView("weixin/order/myOrder");
-		User curUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER_KEY);
-		List<Order> orderList = orderService.listByUserId(curUser.getId());
+		List<Order> orderList = new ArrayList<Order>();
+		if(param.getPhone() != null){
+			User curUser = userService.getByPhone(param.getPhone());
+			if(curUser != null){
+				orderList = orderService.listByUserId(curUser.getId());
+			}
+		}
 		mv.addObject("orderList",orderList);
         return mv; 
     }
@@ -92,6 +109,8 @@ public class OrderController {
     public ModelAndView info(HttpServletRequest request,Integer orderId) throws Exception { 
 		ModelAndView mv = new ModelAndView("weixin/order/info");
 		Order order = orderService.getById(orderId);
+		Map<Integer,String> orderStateMap = Constants.AlbumOrderState.toMap();
+		mv.addObject("orderStateMap",orderStateMap);
 		mv.addObject("order",order);
         return mv; 
     }

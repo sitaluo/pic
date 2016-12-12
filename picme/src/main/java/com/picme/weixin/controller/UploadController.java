@@ -76,7 +76,6 @@ public class UploadController {
     @ResponseBody
     @RequestMapping("/upload2")
     public RestResult<Object> upload2(@RequestParam("file") CommonsMultipartFile[] files,UploadParam param,HttpServletRequest request){  
-    	
     	RestResult<Object> reset = new RestResult<Object>();
        
     	for(int i = 0;i<files.length;i++){  
@@ -90,6 +89,7 @@ public class UploadController {
                    // FileOutputStream os = new FileOutputStream("D:\\work\\temp\\testImgs\\" + new Date().getTime() + files[i].getOriginalFilename());  
                 	 String fileType=files[i].getOriginalFilename().substring(files[i].getOriginalFilename().lastIndexOf(".")+1);
                 	 String fileName =  new Date().getTime() + "." + fileType;
+                	 String dbFileName = "static/upload/imgs/"+fileName;
                 	 File temp = new File(path);
                 	 if(!temp.exists()){
                 		 temp.mkdirs();
@@ -109,11 +109,12 @@ public class UploadController {
                     int finaltime = (int) System.currentTimeMillis();  
                     System.out.println(finaltime - pre);  
                     
-                    imageService.addAlbum(fileName, param.getUserId(),param.getAlbumId());
+                    imageService.addAlbum(dbFileName, param.getUserId(),param.getAlbumId(),param.getOrder());
                     logger.debug("上传成功:"+path + fileName); 
                 } catch (Exception e) {  
                 	reset.markAsfailed();
-                    e.printStackTrace();  
+                    //e.printStackTrace();  
+                    logger.debug("上传出错:",e);
                     System.out.println("上传出错");  
                 }  
         }  

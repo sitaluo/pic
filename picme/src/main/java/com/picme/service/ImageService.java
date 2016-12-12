@@ -54,15 +54,29 @@ public class ImageService {
 		}
 	}
 	
-	public void addAlbum(String path,Integer userId,Integer albumId) throws Exception{
+	public void addAlbum(String path,Integer userId,Integer albumId,Integer order) throws Exception{
 		if(path != null && userId != null){
 			Image img = new Image();
 			img.setPath(path);
 			img.setType(Constants.ImageType.PHOTO_ALBUM);
 			img.setUserId(userId);
 			img.setAlbumId(albumId);
+			img.setOrd(order);
 			imageMapper.insert(img);
 		}
+	}
+	
+	/**
+	 * 获得某个影集的图片
+	 * @param albumId
+	 * @return
+	 */
+	public List<Image> listAlbumImgs(Integer albumId){
+		ImageExample example = new ImageExample();
+		example.setOrderByClause("ord");
+		example.createCriteria().andAlbumIdEqualTo(albumId);
+		List<Image> list = imageMapper.selectByExample(example);
+		return list;
 	}
 	
 	public void list(Page<Image> page) throws Exception{

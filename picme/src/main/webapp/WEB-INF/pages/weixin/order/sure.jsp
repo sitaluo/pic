@@ -41,7 +41,7 @@
 	  			<a id="queryOrder" href="${basePath }weixin/order/myOrder" class="btn btn-success col-xs-4 col-sm-4 col-md-4">查看订单</a>
 	  		</c:if>
 	  		<c:if test="${paySuccess eq 0 }">
-	  			<a id="queryOrder" href="${basePath }weixin/code" class="btn btn-danger col-xs-4 col-sm-4 col-md-4">查看订单</a>
+	  			<a id="queryOrder" href="${basePath }weixin/order/myOrder" class="btn btn-danger col-xs-4 col-sm-4 col-md-4">查看订单</a>
 	  		</c:if>
 	  		<div class="col-xs-1 col-sm-1 col-md-1"></div>
 	  		<a id="backIndex" href="${basePath }weixin/code"  class="btn btn-info col-xs-4 col-sm-4 col-md-4">返回首页</a>

@@ -23,8 +23,8 @@ public class PhotoAlbumService {
 	public PhotoAlbum getById(PhotoAlbum record) throws Exception{
 		return photoAlbumMapper.selectByPrimaryKey(record.getId());
 	}
-	public PhotoAlbum getById(Integer uid) {
-		return photoAlbumMapper.selectByPrimaryKey(uid);
+	public PhotoAlbum getById(Integer id) {
+		return photoAlbumMapper.selectByPrimaryKey(id);
 	}
 	
 	public void update(PhotoAlbum record){

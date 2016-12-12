@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<script type="text/javascript">
+function load (){  
+  
+    document.addEventListener('touchstart',touch, false);  
+    document.addEventListener('touchmove',touch, false);  
+    document.addEventListener('touchend',touch, false);  
+      
+    function touch (event){  
+        var event = event || window.event;  
+          
+        var oInp = document.getElementById("inp");  
+  
+        switch(event.type){  
+            case "touchstart":  
+                oInp.innerHTML = "Touch started (" + event.touches[0].clientX + "," + event.touches[0].clientY + ")";  
+                console.log("start");
+                var target = document.elementFromPoint(event.touches[0].clientX, event.touches[0].clientY);
+                console.log(target);
+                console.log(event);
+                break;  
+            case "touchend":  
+                oInp.innerHTML = "<br/>Touch end (" + event.changedTouches[0].clientX + "," + event.changedTouches[0].clientY + ")";  
+                console.log("end");
+                var target = document.elementFromPoint(event.touches[0].clientX, event.touches[0].clientY);
+                console.log(target);
+                console.log(event);
+                break;  
+            case "touchmove":  
+                event.preventDefault();  
+                oInp.innerHTML = "<br/>Touch moved (" + event.touches[0].clientX + "," + event.touches[0].clientY + ")";  
+                console.log("move");
+                var target = document.elementFromPoint(event.touches[0].clientX, event.touches[0].clientY);
+                console.log(target);
+                console.log(event);
+                break;  
+        }  
+          
+    }  
+}  
+window.addEventListener('load',load, false);  
+</script>
+<body>
+<div id="inp"></div>  
+<br>
+<div id="t1" style="height:130px;width:50%;border: 1px solid gray;"></div>
+<div id="t2" style="height:130px;width:50%;border: 1px solid green;"></div>
+<div id="t3" style="height:130px;width:50%;border: 1px solid red;"></div>
+<div id="t4" style="height:130px;width:50%;border: 1px solid green;"></div>
+==================
+
+<div class="dustbin"><br />垃<br />圾<br />箱</div>
+<div class="dragbox">
+    <div class="draglist" title="拖拽我" draggable="true">列表1</div>
+    <div class="draglist" title="拖拽我" draggable="true">列表2</div>
+    <div class="draglist" title="拖拽我" draggable="true">列表3</div>
+    <div class="draglist" title="拖拽我" draggable="true">列表4</div>
+    <div class="draglist" title="拖拽我" draggable="true">列表5</div>
+    <div class="draglist" title="拖拽我" draggable="true">列表6</div>
+</div>
+<div class="dragremind"></div>
+
+<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>
