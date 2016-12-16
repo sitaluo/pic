@@ -5,6 +5,7 @@ public class DownloadParam {
 	private Integer userId;
 	private Integer albumId;
 	private String mediaId;
+	private Integer order;
 	
 	public Integer getUserId() {
 		return userId;
@@ -23,5 +24,11 @@ public class DownloadParam {
 	}
 	public void setMediaId(String mediaId) {
 		this.mediaId = mediaId;
+	}
+	public Integer getOrder() {
+		return order;
+	}
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 }

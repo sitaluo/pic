@@ -54,15 +54,43 @@ public class ImageService {
 		}
 	}
 	
-	public void addAlbum(String path,Integer userId,Integer albumId,Integer order) throws Exception{
+	public void update(Integer imgId, String path,String thumbPath){
+		Image img = new Image();
+		img.setId(imgId);
+		img.setPath(path);
+		img.setThumbPath(thumbPath);
+		imageMapper.updateByPrimaryKeySelective(img);
+	}
+	
+	public Image saveAlbum(String path,Integer userId,Integer albumId,Integer order) {
+		
 		if(path != null && userId != null){
-			Image img = new Image();
+			ImageExample example = new ImageExample();
+			example.createCriteria().andAlbumIdEqualTo(albumId)
+			.andOrdEqualTo(order)
+			.andUserIdEqualTo(userId);
+			List<Image> list = imageMapper.selectByExample(example);
+			Image img;
+			boolean isNew = true;
+			if(list != null && list.size() > 0){
+				img = list.get(0);
+				isNew = false;
+			}else{
+				img = new Image();
+			}
 			img.setPath(path);
 			img.setType(Constants.ImageType.PHOTO_ALBUM);
 			img.setUserId(userId);
 			img.setAlbumId(albumId);
 			img.setOrd(order);
-			imageMapper.insert(img);
+			if(isNew){
+				imageMapper.insert(img);
+			}else{
+				imageMapper.updateByPrimaryKeySelective(img);
+			}
+			return img;
+		}else{
+			return null;
 		}
 	}
 	

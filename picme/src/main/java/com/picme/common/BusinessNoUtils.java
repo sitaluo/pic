@@ -8,9 +8,9 @@ public class BusinessNoUtils {
 	public static String getPhotoAlbumNo(){
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss.sss");
 		String no = format.format(new Date());
-		return no.replace(".", ""); 
-	}
-	
+		return no.replace(".", "");  
+	}  
+	 
 	public static String getCommonBusinessNo(){ 
 		SimpleDateFormat format =  new SimpleDateFormat("yyyyMMddHHmmss.sss");
 		String no = format.format(new Date() );  

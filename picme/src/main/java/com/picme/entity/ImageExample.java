@@ -324,6 +324,76 @@ public class ImageExample {
             return (Criteria) this;
         }
 
+        public Criteria andThumbPathIsNull() {
+            addCriterion("thumb_path is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathIsNotNull() {
+            addCriterion("thumb_path is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathEqualTo(String value) {
+            addCriterion("thumb_path =", value, "thumbPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathNotEqualTo(String value) {
+            addCriterion("thumb_path <>", value, "thumbPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathGreaterThan(String value) {
+            addCriterion("thumb_path >", value, "thumbPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathGreaterThanOrEqualTo(String value) {
+            addCriterion("thumb_path >=", value, "thumbPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathLessThan(String value) {
+            addCriterion("thumb_path <", value, "thumbPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathLessThanOrEqualTo(String value) {
+            addCriterion("thumb_path <=", value, "thumbPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathLike(String value) {
+            addCriterion("thumb_path like", value, "thumbPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathNotLike(String value) {
+            addCriterion("thumb_path not like", value, "thumbPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathIn(List<String> values) {
+            addCriterion("thumb_path in", values, "thumbPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathNotIn(List<String> values) {
+            addCriterion("thumb_path not in", values, "thumbPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathBetween(String value1, String value2) {
+            addCriterion("thumb_path between", value1, value2, "thumbPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathNotBetween(String value1, String value2) {
+            addCriterion("thumb_path not between", value1, value2, "thumbPath");
+            return (Criteria) this;
+        }
+
         public Criteria andUserIdIsNull() {
             addCriterion("user_id is null");
             return (Criteria) this;
@@ -566,6 +636,11 @@ public class ImageExample {
 
         public Criteria andPathLikeInsensitive(String value) {
             addCriterion("upper(path) like", value.toUpperCase(), "path");
+            return (Criteria) this;
+        }
+
+        public Criteria andThumbPathLikeInsensitive(String value) {
+            addCriterion("upper(thumb_path) like", value.toUpperCase(), "thumbPath");
             return (Criteria) this;
         }
     }

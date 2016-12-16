@@ -123,17 +123,24 @@ public class WeiXinApiController {
         return mv; 
     }
 	
-	
-	/**
-	 * 影集排版test
-	 * @param request
-	 * @return
-	 */
+	//影集排版： 选择图片调用微信接口
 	@RequestMapping("/typeSetting2" )   
-    public ModelAndView typeSetting2(HttpServletRequest request) { 
+    public ModelAndView typeSetting2(HttpServletRequest request,String coverImg) throws Exception { 
 		ModelAndView mv = new ModelAndView("weixin/typeSetting2");
-		Map<String,String> jsApiSign = JsApiSign.sign(request.getRequestURL().toString());
+		
+		PhotoAlbum album = new PhotoAlbum();
+		album.setNo(BusinessNoUtils.getPhotoAlbumNo());
+		album.setCoverImg("static/upload/sysImgs/"+coverImg+".jpg");
+		album.setBottomImg("static/upload/sysImgs/1.jpg");
+		User user = (User) request.getSession().getAttribute(Constants.CURRENT_USER_KEY);
+		album.setUserId(user.getId());
+		album.setPrice(new BigDecimal(188));//TODO
+		photoAlbumService.save(album);
+		
+		Map<String,String> jsApiSign = JsApiSign.sign(request.getRequestURL().toString()+"?"+request.getQueryString());
 		mv.addObject("jsApiSign", jsApiSign);
+		mv.addObject("coverImg",coverImg);
+		mv.addObject("album",album);
         return mv; 
     }
 	

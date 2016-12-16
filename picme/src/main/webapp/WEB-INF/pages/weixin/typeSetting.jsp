@@ -29,6 +29,9 @@
 .bd1{
 	border: 1px solid gray;
 }
+.dashBorder{
+ border: 1px dashed;
+}
 
 </style>
 
@@ -61,12 +64,13 @@
 		
 		<c:forTokens items="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24" delims="," var="item" varStatus="i">
 		   <div class="tile col-xs-6 col-sm-6 col-md-6 marging15px " style="padding: 10px 10px;height:200px;">
-				<div class="tile__name" ><span class="glyphicon glyphicon-edit imgEdit"></span></div>
+				<!-- <div class="tile__name" ><span class="glyphicon glyphicon-edit imgEdit"></span></div> -->
 				<div class="tile__list" style="height:inherit;padding-bottom: 20px;display:table;vertical-align:middle;max-height:180px;width:100%;">
-					<span style="display:table-cell;vertical-align:middle;height:180px;width:0px;padding-bottom: 20px;">
+					<span style="display:table-cell;vertical-align:middle;height:180px;width:0px;padding-bottom: 20px;" class="touchSpan">
 						<img name="preview1 " src="${basePath }static/upload/sysImgs/noimg.png"
-						class="img-responsive  noPreImg" alt="">
-					<input type="hidden" name="img_index" value="${i.index }"></span>
+						class="img-responsive  noPreImg touchImg" alt="">
+					</span>
+					<input type="hidden" name="img_index" value="${i.index }">
 				</div>
 			</div>
 			<c:if test="${((i.index + 1)%2 eq 0) && (i.index gt 0) }">
@@ -132,6 +136,9 @@
 	</div> 
 
 <%@include file="../common/MainJS.jsp"%>
+<script src="${staticPath}/js/DragSort.js" type="text/javascript"></script>
+<script type="text/javascript">
+</script>
 <script type="text/javascript">
 var MAX_PIC_NUM = 24;
 var have_num = 0;
@@ -408,10 +415,10 @@ $(function(){
 	//var el = document.getElementById('select_img_div');
 	//new Sortable(el);
 	//var e2 = document.getElementById('select_img_div');
-	var sortable = new Sortable(select_img_div, {
+	/* var sortable = new Sortable(select_img_div, {
 		draggable: '.tile',
 		handle: '.tile__list'
-	});
+	}); */
 	
 });
 

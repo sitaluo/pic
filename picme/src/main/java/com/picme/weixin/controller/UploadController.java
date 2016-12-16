@@ -109,7 +109,7 @@ public class UploadController {
                     int finaltime = (int) System.currentTimeMillis();  
                     System.out.println(finaltime - pre);  
                     
-                    imageService.addAlbum(dbFileName, param.getUserId(),param.getAlbumId(),param.getOrder());
+                    imageService.saveAlbum(dbFileName, param.getUserId(),param.getAlbumId(),param.getOrder());
                     logger.debug("上传成功:"+path + fileName); 
                 } catch (Exception e) {  
                 	reset.markAsfailed();

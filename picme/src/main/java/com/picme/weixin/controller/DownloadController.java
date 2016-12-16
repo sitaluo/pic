@@ -11,6 +11,7 @@ import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.annotations.Update;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.picme.common.DownloadImgThread;
 import com.picme.common.RestResult;
 import com.picme.common.WeiXinApiUtils;
+import com.picme.entity.Image;
 import com.picme.service.ImageService;
 import com.picme.weixin.vo.DownloadParam;
 
@@ -46,34 +49,47 @@ public class DownloadController {
 	@RequestMapping("/tmpFile")
 	public RestResult<Object> tmpFile(DownloadParam param,HttpServletRequest request) {
 		RestResult<Object> result = new RestResult<Object>();
-		File file = fetchTmpImg(param, request);
-		if(file == null){
-			result.markAsfailed();
-		}
 		if(param.getMediaId() == null || param.getAlbumId() == null || param.getUserId() == null){
 			result.markAsfailed();
 			result.setRet_msg("参数不正确");
+			return result;
+		}
+		String path = request.getSession().getServletContext().getRealPath("static/upload/imgs/");
+		Image image = imageService.saveAlbum("", param.getUserId(),param.getAlbumId(),param.getOrder());
+		
+		if(image == null){
+			result.markAsfailed();
+		}else{
+			//开一个线程去从微信服务器下载图片
+			new Thread(new DownloadImgThread(path, param.getMediaId(), image.getId(), imageService)).start();
 		}
 		return result;
 	}
 	
 	private File fetchTmpImg(DownloadParam param,HttpServletRequest request){
-		return fetchTmpFile(param.getMediaId(), "img", request, param.getUserId(), param.getAlbumId());
+		return fetchTmpFile(param.getMediaId(), "img", request, param.getUserId(), param.getAlbumId(),param.getOrder());
 	}
 
 	// 获取微信服务器中生成的媒体文件
 	// 由于视频使用的是http协议，而图片、语音使用http协议，故此处需要传递media_id和type
-	private File fetchTmpFile(String media_id, String type,HttpServletRequest request,Integer userId,Integer albumId) {
-		try {
+	private File fetchTmpFile(String media_id, String type,HttpServletRequest request,Integer userId,Integer albumId,Integer order) {
 			String path=request.getSession().getServletContext().getRealPath("static/upload/imgs/");
+			String dbFileName = this.fetchTmpFile(media_id, path);
+			//imageService.update(imgId, dbFileName);
+			//imageService.saveAlbum(dbFileName, userId,albumId,order);
+            logger.debug("微信图片下载并上传到服务器成功:"+ dbFileName); 
+		return null;
+	}
+
+	private String fetchTmpFile(String media_id,String realPath) {
+		String dbFileName = "";
+		try {
+			//request.getSession().getServletContext().getRealPath("static/upload/imgs/");
+			String path = realPath;
 			String token = WeiXinApiUtils.getAccessToken();
 			String url = null;
 			// 视频是http协议
-			if ("video".equalsIgnoreCase(type)) {
-				url = String.format(GET_TMP_MATERIAL_VIDEO, token, media_id);
-			} else {
-				url = String.format(GET_TMP_MATERIAL, token, media_id);
-			}
+			url = String.format(GET_TMP_MATERIAL, token, media_id);
 			URL u = new URL(url);
 			HttpURLConnection conn = (HttpURLConnection) u.openConnection();
 			conn.setRequestMethod("GET");
@@ -91,7 +107,7 @@ public class DownloadController {
 				file_name = tmp.substring(index + 1, tmp.length() - 1);
 			}
 			// 生成不同文件名称
-			String dbFileName = "static/upload/imgs/"+file_name;
+			dbFileName = "static/upload/imgs/"+file_name;
 			File fileTempDir = new File(path);
 			if(!fileTempDir.exists()){
 				fileTempDir.mkdirs();
@@ -109,9 +125,7 @@ public class DownloadController {
 			bos.close();
 			bis.close();
 			
-			//imageService.addAlbum(dbFileName, userId,albumId);
             logger.debug("微信图片下载并上传到服务器成功:"+ dbFileName); 
-			return file;
 		} catch (MalformedURLException e) {
 			logger.debug("",e);
 		} catch (IOException e) {
@@ -119,7 +133,7 @@ public class DownloadController {
 		} catch (Exception e) {
 			logger.debug("",e);
 		}
-		return null;
+		return dbFileName;
 	}
-
+	
 }

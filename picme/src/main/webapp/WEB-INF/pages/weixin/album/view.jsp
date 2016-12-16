@@ -58,7 +58,7 @@
 				<!-- <div class="tile__name" ><span class="glyphicon glyphicon-edit imgEdit"></span></div> -->
 				<div class="tile__list" style="height:inherit;padding-bottom: 20px;display:table;vertical-align:middle;max-height:180px;width:100%;">
 					<span style="display:table-cell;vertical-align:middle;height:180px;width:0px;padding-bottom: 20px;">
-						<img name="preview1 " src="${basePath }${item.path}"
+						<img name="preview1 " src="${basePath }${item.thumbPath}"
 						class="img-responsive  noPreImg" alt="">
 					<input type="hidden" name="img_index" value="${i.index }"></span>
 				</div>
