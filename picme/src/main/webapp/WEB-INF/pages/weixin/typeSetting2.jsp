@@ -40,6 +40,7 @@
 <input id="noncestr" type="hidden" value="${jsApiSign.get('nonceStr')}" />
 <input id="signature" type="hidden" value="${jsApiSign.get('signature')}" />
 <input id="url" type="hidden" value="${jsApiSign.get('url')}" />
+<input id="appId" type="hidden" value="${jsApiSign.get('appId')}" />
 
 <input type="hidden" name="albumId" id="albumId" value="${album.id }">
 <input type="hidden" name="userId" id="userId" value="${current_user.id }">
@@ -77,7 +78,14 @@
 			</div>
 			<c:if test="${((i.index + 1)%2 eq 0) && (i.index gt 0) }">
 				<div class="col-xs-12 col-sm-12 col-md-12 ignore pageNumDiv">
-					<span class="pull-left">P0${i.index }</span><span class="pull-right">P0${i.index + 1}</span>
+					<c:if test="${i.index lt 10 }">
+						<span class="pull-left">P0${ i.index }</span>
+						<span class="pull-right">P0${ i.index + 1}</span>
+					</c:if>
+					<c:if test="${i.index gt 10 or i.index eq 10}">
+						<span class="pull-left">P${ i.index }</span>
+						<span class="pull-right">P${ i.index + 1}</span>
+					</c:if>
 				</div>
 			</c:if>
 		</c:forTokens>
@@ -90,7 +98,7 @@
 	  <c:forTokens items="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24" delims="," var="item" varStatus="i">
 	  <div id="upImgDiv${item }" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
 	  	<div class="col-xs-5 col-sm-5 col-md-5" >
-	  		<img name="up_preview${(i.index + 1)}" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg" alt="" style="max-height:100px;">
+	  		<img name="up_preview${(i.index + 1)}" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg tempPreImg" alt="" style="max-height:100px;">
 	  		<input type="file" multiple name="file1" onchange="fileSelected(this);" class="hidden" >
 	  	</div>
 	  	<div class="col-xs-7 col-sm-7 col-md-7 col-xs-offset-7" style="position: absolute;top:40%;"> 
@@ -132,16 +140,25 @@
 		<input type="file" id="modify_img_file" onchange="modifyFileSelected(this);" class="hidden">
 	</div> 
 
-
 <%@include file="../common/MainJS.jsp"%>
 <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script src="${staticPath}/js/DragSort.js" type="text/javascript"></script>
+<script src="${staticPath}/js/WeixinJsApi.js" type="text/javascript"></script>
+<script src="${staticPath}/js/jquery.mobile-1.4.5.js" type="text/javascript"></script>
+<!-- <script src="//cdn.bootcss.com/jquery-mobile/1.4.5/jquery.mobile.min.js" type="text/javascript"></script>
+ -->
+ 
 <script type="text/javascript">
 var timestamp = $("#timestamp").val();//时间戳
 var nonceStr = $("#noncestr").val();//随机串
 var signature = $("#signature").val();//签名
 var url = $("#url").val();
-var appId = "wx4ce2981befb8f07f";
+var appId = $("#appId").val();
+//var appId = "wx4ce2981befb8f07f";
+
+var images = {localIds:[],srverIds:[],flags:[]};
+
+WeixinJsApi.config(appId,timestamp,nonceStr,signature);
 
 var MAX_PIC_NUM = 24;//24
 var have_num = 0;
@@ -151,22 +168,6 @@ var upload_complete_num = 0;
 var upload_fail_num = 0;
 var loadingIndex = null;
 var localIdArr = new Array();//
-
-//WeixinJsApi.config(appId,timestamp,nonceStr,signature);
-
-wx.config({
-   debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-   appId: appId, // 必填，公众号的唯一标识
-   timestamp: timestamp, // 必填，生成签名的时间戳
-   nonceStr: nonceStr, // 必填，生成签名的随机串
-   signature: signature, // 必填，签名，见附录1
-   jsApiList: ['chooseImage' ,'previewImage','uploadImage','downloadImage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-});
-
-wx.ready(function(){
-	console.log("配置信息检验完成");
-	//aaa();
-});
 
 function aaa(){
 	//localIdArr = null;
@@ -178,8 +179,8 @@ function aaa(){
 	    success: function (res) {
 	        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
 	        console.log("选择图片："+localIds);
-	        //localIdArr = localIds;
 	        //alert(localIds.length + "-haveNum:" + have_num + "-MAX_PIC_NUM:" + MAX_PIC_NUM);
+	        //var have_num = images.localIds.length;
 	        if((localIds.length + have_num) > MAX_PIC_NUM){
 	    		 layer.open({
 	    		    content: "最大可选"+MAX_PIC_NUM+"张，超出的部分将会忽略"
@@ -189,8 +190,9 @@ function aaa(){
 	        var needNum = MAX_PIC_NUM - have_num;
 	    	var num = localIds.length > needNum ? needNum : localIds.length;
 	    	
-	        for(var i = 0; i< localIds.length; i ++ ){
+	        for(var i = 0; i< num; i ++ ){
 	        	localIdArr.push(localIds[i]);
+	        	images.localIds.push(localIds[i]);
 	        	//$("img[name=preview"+(i+1)+"]").attr("src",localIds[i]);
 	        	var imgTemp = $("img[name^=preview].noPreImg").first();
 	            imgTemp.prop("src",localIds[i]);
@@ -207,6 +209,9 @@ function aaa(){
 	    		$("#batchFileBtn").parent("div").children("input[name=step]").val(1);
 	    	}
 	    	//alert("选择图片2："+localIds);
+	    },
+	    fail:function(res){
+	    	//alert(JSON.stringify(res));
 	    }
 	});
 }
@@ -347,6 +352,11 @@ function checkLoading(){
 }
 
 $(function(){
+	/* $(".touchImg").click(function(){
+		alert("click");
+	}); */
+	
+	
 	$(".reUpload").click(function(){
 		//重新上传
 		var order = $(this).parent("div").children("input[name=order]").val();
@@ -365,6 +375,7 @@ $(function(){
 	
 	$("#batchFileBtn").click(function(){
 		var step = $("input[name=step]").val();
+		
 		if(step == 0){
 			//添加图片
 			//$("#batchFile").trigger("click");
@@ -390,11 +401,26 @@ $(function(){
 				    	    type: 2,shadeClose: false,shade: 'background-color: rgba(0,0,0,.3)'
 				    	    ,content: '上传中(0/24)'
 				    	  });
+				      
+				      var orderArr = [];
+				      var order2LocalId = [];
+				      $(".touchImg").each(function(j){
+				    	  var img = $(this);
+				    	  orderArr[img.attr("src")] = j;
+				    	  order2LocalId[j] = img.attr("src");
+				      });
+				      if(orderArr.length != 24){
+				    	  console.log("error:order");
+				      }
+				      $(".tempPreImg").each(function(j){
+				    	  $(this).attr("src",order2LocalId[j]);
+				      });
+				      
 				      $("input[name=step]").val(2);
 				      //alert("localIdArr:"+localIdArr.length + "="+localIdArr + "---" + localIdArr[0]);
 						$("#uploadingMsg").addClass("show").removeClass("hidden");
 						for( var i = 0; i< localIdArr.length; i++){
-							weixinUpload(localIdArr[i], i + 1);
+							weixinUpload(localIdArr[i], orderArr[localIdArr[i]]);
 						}
 				   }
 			  });
@@ -419,7 +445,8 @@ $(function(){
 		hiddenModifyImgDiv();
 	 });
 	$(".modify_img_btn").click(function(){
-		$(this).parent().next().trigger("click");
+		console.log($(this).parent().next());
+		$("#modify_img_file").trigger("click");
 	 });
 	//修改图片end
 });
