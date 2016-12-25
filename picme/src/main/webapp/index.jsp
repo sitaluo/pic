@@ -8,7 +8,7 @@
 <meta name="description" content="">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, user-scalable=0">
-<!-- <link rel="shortcut icon" type="image/png" href="./static/companyIndex/favicon.png"> -->
+<link rel="shortcut icon" href="./static/companyIndex/favicon.ico">
 <link rel="stylesheet" type="text/css" href="./static/companyIndex/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="./static/companyIndex/style.css">
 <link rel="stylesheet" href="./static/companyIndex/css/animate.min.css">
@@ -48,10 +48,10 @@
 					</div>
 					<div class="collapse navbar-collapse navbar-1">
 						<ul class="site-navigation nav navbar-nav pull-right">
-							<li><a href="index.jsp" class="ltc-white">主页</a></li>
-							<li><a href="index.jsp" class="ltc-white">关于我们</a></li>
-							<li><a href="index.jsp" class="ltc-white">团队简介</a></li>
-							<li><a href="index.jsp" class="ltc-white">商业合作</a></li>
+							<li><a href="index.jsp" class="ltc-white"><span style="margin-left: 20px;">主页</span></a></li>
+							<li><a href="index.jsp" class="ltc-white"><span style="margin-left: 20px;">关于我们</span></a></li>
+							<li><a href="index.jsp" class="ltc-white"><span style="margin-left: 20px;">团队简介</span></a></li>
+							<li><a href="index.jsp" class="ltc-white"><span style="margin-left: 20px;">商业合作</span></a></li>
 						</ul>
 					</div>
 				</nav>
@@ -59,7 +59,7 @@
 			<div class="container">
 				<div class="row voffset">
 					<div class="col-sm-12">
-						<h3 class=" mg-lg">「 优秀摄影师推荐及约拍」</h3>
+						<h3 class=" mg-lg"><span class="pull-right" style="font-weight: 100;">「 优秀摄影师推荐及约拍」</span></h3>
 						<p>
 							<br>
 						</p>

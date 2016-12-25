@@ -60,6 +60,14 @@ $(function(){
 			  });
 			return;
 		}
+		
+		if(!checkMobile(phone)){
+			layer.open({
+			    content: '请填写正确的手机号'
+			    ,btn: '确定'
+			  });
+			return;
+		}
 		var param = $("#form").serialize();
 		$.ajax({
 			type : "POST",
@@ -111,6 +119,16 @@ function submitForm($btn) {
 		}
 	});
 }
+
+
+	function checkMobile(str) {
+		var re = /^1\d{10}$/
+		if (re.test(str)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 </script>
 
 </body>

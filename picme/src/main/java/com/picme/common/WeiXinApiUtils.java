@@ -10,13 +10,13 @@ import com.picme.weixin.entity.WeiXinUser;
 public class WeiXinApiUtils {
 	
 	static Logger logger = LoggerFactory.getLogger(WeiXinApiUtils.class);
-	//测试号
-	private static String APP_ID = "wx4ce2981befb8f07f";
-	private static String APP_SECRET = "ba6ae35ed43f18f58a25ec820a6bef66";
+	
+	private static String APP_ID = ConfigUtils.getAppID();
+	private static String APP_SECRET = ConfigUtils.getAppSecret();
+	//private static String APP_ID = "wx4ce2981befb8f07f";
+	//private static String APP_SECRET = "ba6ae35ed43f18f58a25ec820a6bef66";
 	//AppID=wxfbac1520bb6bdf93
 	//AppSecret=d8a4f3cdb10fc86fb5406b0d06f1a26a
-	//private static String APP_ID = "wxfbac1520bb6bdf93";
-	//private static String APP_SECRET = "d8a4f3cdb10fc86fb5406b0d06f1a26a";
 	
 	private static String ACCESS_TOKEN = null;
 	private static Long LAST_GET_ACCESS_TOKEN_TIME = 0L;

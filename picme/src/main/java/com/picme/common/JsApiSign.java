@@ -40,7 +40,7 @@ public class JsApiSign {
         ret.put("nonceStr", nonce_str);
         ret.put("timestamp", timestamp);
         ret.put("signature", signature);
-
+        ret.put("appId", ConfigUtils.getAppID());
         return ret;
     }
 

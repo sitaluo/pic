@@ -44,11 +44,10 @@
 	<img src="${basePath }static/upload/sysImgs/Rectangle.png" style="height:16px;"> 查看影集
 </div>  
 <div id="step1_div" >
-	<hr>
-	<div class="col-xs-12 col-sm-12 col-md-12 padding10px">
-	  <div class="col-xs-6 col-sm-6 col-md-6 padding15px bd1"><img src="${basePath }static/upload/sysImgs/back_cover.jpg" class="img-responsive" style="border:1px dashed gray;"></div>
-	  <div class="col-xs-6 col-sm-6 col-md-6 padding15px bd1"><img src="${basePath }${paramTemp.coverImg }" class="img-responsive" style="border:1px dashed gray;"></div>
-	  <div class="col-xs-12 col-sm-12 col-md-12"><span class="pull-left">封底</span><span class="pull-right">封面</span></div>
+	<div class="col-xs-12 col-sm-12 col-md-12 padding10px" style="background-color: #F7F7F7;">
+	  <div class="col-xs-6 col-sm-6 col-md-6 padding15px "><img src="${basePath }${paramTemp.coverImg }" class="img-responsive" style="border:0px dashed gray;"></div>
+	  <div class="col-xs-6 col-sm-6 col-md-6 padding15px "><img src="${basePath }static/upload/sysImgs/back_cover.jpg" class="img-responsive" style="border:0px dashed gray;"></div>
+	  <div class="col-xs-12 col-sm-12 col-md-12"><span class="pull-left">封面</span><span class="pull-right">封底</span></div>
 	</div>
 	<hr>
 	<div class="row col-xs-12 col-sm-12 col-md-12 select_img_div" id="select_img_div" style="margin: 0px 0px;padding:10px;">
@@ -64,8 +63,15 @@
 				</div>
 			</div>
 			<c:if test="${((i.index + 1)%2 eq 0) && (i.index gt 0) }">
-				<div class="col-xs-12 col-sm-12 col-md-12 ignore pageNumDiv">
-					<span class="pull-left">P0${i.index }</span><span class="pull-right">P0${i.index + 1}</span>
+				<div class="col-xs-12 col-sm-12 col-md-12 ignore pageNumDiv" style="margin-bottom: 10px;">
+					<c:if test="${i.index lt 10 }">
+						<span class="pull-left">P0${ i.index }</span>
+						<span class="pull-right">P0${ i.index + 1}</span>
+					</c:if>
+					<c:if test="${i.index gt 10 or i.index eq 10}">
+						<span class="pull-left">P${ i.index }</span>
+						<span class="pull-right">P${ i.index + 1}</span>
+					</c:if>
 				</div>
 			</c:if>
 		</c:forEach>

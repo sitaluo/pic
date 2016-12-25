@@ -32,28 +32,28 @@
 <body class="">
 <div class="example">
 	<div id="myCarousel" class="carousel slide">
-		<ol class="carousel-indicators">
+		<ol class="carousel-indicators" style="bottom: 0px;margin-bottom: 3px;">
 			<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
 			<li data-target="#myCarousel" data-slide-to="1"></li>
 			<li data-target="#myCarousel" data-slide-to="2"></li>
 		</ol>
 		<div class="carousel-inner">
 			<div class="item active">
-				<img src="${basePath }static/upload/sysImgs/carousel1.png" alt="">
+				<img src="${basePath }static/upload/sysImgs/album_index_1.jpg" alt="">
 			<div class="carousel-caption">
 				<h4></h4>
 				<p></p>
 			</div>
 		</div>
 		<div class="item">
-			<img src="${basePath }static/upload/sysImgs/carousel2.png" alt="">
+			<img src="${basePath }static/upload/sysImgs/album_index_2.jpg" alt="">
 			<div class="carousel-caption">
 				<h4></h4>
 				<p></p>
 			</div>
 		</div>
 		<div class="item">
-			<img src="${basePath }static/upload/sysImgs/carousel3.png" alt="">
+			<img src="${basePath }static/upload/sysImgs/album_index_3.jpg" alt="">
 			<div class="carousel-caption">
 				<h4></h4>
 				<p></p>

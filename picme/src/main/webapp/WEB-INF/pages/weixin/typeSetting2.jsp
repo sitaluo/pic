@@ -57,10 +57,10 @@
 <div id="step1_div" >
 	  
 	<hr>
-	<div class="col-xs-12 col-sm-12 col-md-12 padding10px">
-	  <div class="col-xs-6 col-sm-6 col-md-6 padding15px bd1"><img src="${basePath }static/upload/sysImgs/back_cover.jpg" class="img-responsive" style="border:1px dashed gray;"></div>
-	  <div class="col-xs-6 col-sm-6 col-md-6 padding15px bd1"><img src="${basePath }static/upload/sysImgs/${coverImg }.jpg" class="img-responsive" style="border:1px dashed gray;"></div>
-	  <div class="col-xs-12 col-sm-12 col-md-12"><span class="pull-left">封底</span><span class="pull-right">封面</span></div>
+	<div class="col-xs-12 col-sm-12 col-md-12 padding10px" style="background-color: #F7F7F7;">
+	  <div class="col-xs-6 col-sm-6 col-md-6 padding15px "><img src="${basePath }static/upload/sysImgs/cover_350_${coverImg }.jpg" class="img-responsive" style="border:0px dashed gray;"></div>
+	  <div class="col-xs-6 col-sm-6 col-md-6 padding15px "><img src="${basePath }static/upload/sysImgs/back_cover.jpg" class="img-responsive" style="border:0px dashed gray;"></div>
+	  <div class="col-xs-12 col-sm-12 col-md-12"><span class="pull-left">封面</span><span class="pull-right">封底</span></div>
 	</div>
 	<hr>
 	<div class="row col-xs-12 col-sm-12 col-md-12 select_img_div" id="select_img_div" style="margin: 0px 0px;padding:10px;">
@@ -71,13 +71,15 @@
 				<div class="tile__list" style="height:inherit;padding-bottom: 20px;display:table;vertical-align:middle;max-height:180px;width:100%;">
 					<span style="display:table-cell;vertical-align:middle;height:180px;width:0px;padding-bottom: 20px;" class="touchSpan">
 						<img name="preview${(i.index + 1)}" src="${basePath }static/upload/sysImgs/noimg.png"
-						class="img-responsive noPreImg touchImg" alt="">
+						class="img-responsive noPreImg touchImg hidden" alt="">
+						<img name="default${(i.index + 1)}" src="${basePath }static/upload/sysImgs/noimg.png"
+						class="img-responsive defaultImg" alt="">
 					</span>
 					<input type="hidden" name="img_index" value="${i.index }">
 				</div>
 			</div>
 			<c:if test="${((i.index + 1)%2 eq 0) && (i.index gt 0) }">
-				<div class="col-xs-12 col-sm-12 col-md-12 ignore pageNumDiv">
+				<div class="col-xs-12 col-sm-12 col-md-12 ignore pageNumDiv" style="margin-bottom: 10px;">
 					<c:if test="${i.index lt 10 }">
 						<span class="pull-left">P0${ i.index }</span>
 						<span class="pull-right">P0${ i.index + 1}</span>
@@ -96,9 +98,9 @@
 <div id="step2_div" class="hidden">
 	<div class="" id="upload_img_div">
 	  <c:forTokens items="1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24" delims="," var="item" varStatus="i">
-	  <div id="upImgDiv${item }" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
+	  <div id="upImgDiv${i.index }" class="col-xs-12 col-sm-12 col-md-12" style="padding:15px 0px;">
 	  	<div class="col-xs-5 col-sm-5 col-md-5" >
-	  		<img name="up_preview${(i.index + 1)}" src="${basePath }static/upload/sysImgs/noimg.png" class="img-responsive noPreImg tempPreImg" alt="" style="max-height:100px;">
+	  		<img name="up_preview" src="${basePath }static/upload/sysImgs/noimg_min.png" class="img-responsive noPreImg tempPreImg" alt="" style="max-height:100px;">
 	  		<input type="file" multiple name="file1" onchange="fileSelected(this);" class="hidden" >
 	  	</div>
 	  	<div class="col-xs-7 col-sm-7 col-md-7 col-xs-offset-7" style="position: absolute;top:40%;"> 
@@ -106,7 +108,7 @@
 	  		<span class="glyphicon glyphicon-ok-circle hidden" style="color:green;"></span>
 	  		<span class="glyphicon glyphicon-remove-circle hidden" style="color:red;"></span>
 	  		<input type="hidden" name="fileIndexOfArr" value="">
-	  		<input type="hidden" name="order" value="${item }">
+	  		<input type="hidden" name="order" value="${i.index }">
 	  		<input type="hidden" name="localId" value="">
 	  		<input type="hidden" name="serverId" value="">
 	  		<!-- <span  class="btn btn-danger hidden reUpload" >重新上传</span> -->
@@ -129,7 +131,7 @@
  <div id="modify_img_div" class="hidden" style="position: fixed;top:0px;height:100%;width:100;background-color: white;">
 		<div style="padding: 20px;border: 1px solid grey;">
 			<div style="border: 1px solid grey;">
-				<img  id="modify_img" src="${basePath }static/upload/sysImgs/6.jpg"
+				<img  id="modify_img" src="${basePath }static/upload/sysImgs/noimg.png"
 				class="img-responsive" alt="">
 			</div>
 		</div>
@@ -156,7 +158,18 @@ var url = $("#url").val();
 var appId = $("#appId").val();
 //var appId = "wx4ce2981befb8f07f";
 
-var images = {localIds:[],srverIds:[],flags:[]};
+var images = {
+		localIds:[],
+		srverIds:[],
+		flags:[],
+		localId2serverIdMap:[],
+		localId2uploadStateMap:[],
+		serverId2uploadStateMap:[]
+	};
+
+function isAllSuccess(){
+	return images.serverId2uploadStateMap.length == MAX_PIC_NUM;
+}
 
 WeixinJsApi.config(appId,timestamp,nonceStr,signature);
 
@@ -168,6 +181,8 @@ var upload_complete_num = 0;
 var upload_fail_num = 0;
 var loadingIndex = null;
 var localIdArr = new Array();//
+
+
 
 function aaa(){
 	//localIdArr = null;
@@ -195,6 +210,8 @@ function aaa(){
 	        	images.localIds.push(localIds[i]);
 	        	//$("img[name=preview"+(i+1)+"]").attr("src",localIds[i]);
 	        	var imgTemp = $("img[name^=preview].noPreImg").first();
+	        	imgTemp.removeClass("hidden");
+	        	imgTemp.parent().children(".defaultImg").addClass("hidden");
 	            imgTemp.prop("src",localIds[i]);
 	            imgTemp.removeClass("noPreImg");
 	            var imgTemp2 = $("img[name^=up_preview].noPreImg").first();
@@ -212,6 +229,10 @@ function aaa(){
 	    },
 	    fail:function(res){
 	    	//alert(JSON.stringify(res));
+	    	layer.open({
+    		    content: "选择图片失败，请重新选择"
+    		    ,btn: '确定'
+    		  }); 
 	    }
 	});
 }
@@ -232,10 +253,13 @@ function weixinUpload(localId,order,isShowLoading){
 	    isShowProgressTips: 0, // 默认为1，显示进度提示
 	    success: function (res) {
 	        var serverId = res.serverId; // 返回图片的服务器端ID
+	        images.localId2serverIdMap[localId] = serverId;
+	        images.localId2uploadStateMap[localId] = 1;
+	        
 	        console.log("上传到微信服务器："+serverId);
 	        order = Number(order);
 	        //alert("上传到微信服务器："+serverId);
-	        serverIdArr[order-1] = serverId;
+	        serverIdArr[order] = serverId;
 	        $("#upImgDiv"+ order).find("input[name=serverId]").val(serverId);
 	        if(isShowLoading){//单个上传进度
 				layer.close(singleIndex);
@@ -290,6 +314,7 @@ function downloadAndUploadImg(serverId,order,isShowLoading){
 		success : function(resp, textStatus) {
 			//console.info(resp);
 			if (1 == resp.ret_flag) {
+				images.serverId2uploadStateMap[serverId] = 1;//1成功
 				console.log("上传到服务器");
 				if(isShowLoading){//单个上传进度
 					layer.close(singleIndex);
@@ -337,7 +362,8 @@ function checkLoading(){
 	 if(upload_complete_num + upload_fail_num >= MAX_PIC_NUM){
 		  
 		  layer.close(loadingIndex);
-		  if(upload_complete_num >= MAX_PIC_NUM){
+		  //if(upload_complete_num >= MAX_PIC_NUM){
+		if(isAllSuccess){
    		  layer.open({
    			    content: '全部上传成功'
    			    ,skin: 'msg'
@@ -363,8 +389,8 @@ $(function(){
 		var upImgDiv = $(this).parent("div").parent("div");
 		//var serverId = upImgDiv.find("input[name=serverId]").val();
 		//var localId = upImgDiv.find("input[name=localId]").val();
-		var serverId = serverIdArr[Number(order)-1];
-		var localId = localIdArr[Number(order)-1];
+		var serverId = serverIdArr[Number(order)];
+		var localId = localIdArr[Number(order)];
 		if(serverId != null && serverId != ""){
 			downloadAndUploadImg(serverId,order,true);
 		}else if(localId != null && localId != ""){
@@ -408,6 +434,7 @@ $(function(){
 				    	  var img = $(this);
 				    	  orderArr[img.attr("src")] = j;
 				    	  order2LocalId[j] = img.attr("src");
+				    	  $("img[name=up_preview]").eq(j).attr("src",order2LocalId[j]);
 				      });
 				      if(orderArr.length != 24){
 				    	  console.log("error:order");

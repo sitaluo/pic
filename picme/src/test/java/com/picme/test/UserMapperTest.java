@@ -13,15 +13,18 @@ import com.picme.entity.User;
 import com.picme.entity.UserExample;
 import com.picme.mapper.ImageMapper;
 import com.picme.mapper.UserMapper;
+import com.picme.service.UserService;
 
 
 public class UserMapperTest {
 
 	private static ApplicationContext applicationContext;
+	private static UserService userService;
 
 	@Before
 	public void setUp() throws Exception {
 		applicationContext = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
+		userService = (UserService) applicationContext.getBean("userService");
 	}
 
 	@Test
@@ -45,4 +48,6 @@ public class UserMapperTest {
 		List<Image> userList = imageMapper.selectByExample(example);
 		System.out.println(userList);
 	}
+	
+	
 }

@@ -8,17 +8,87 @@ var ghostEl = null;
 var dragEl;
 var rootEl = document.getElementById("select_img_div");
 var tapEvt;
+var isFirstTapEvt = true;
+
+var isTapHold = false;
+var isTap = false;
+
 function load (){  
+	//$(document).on("pagecreate","#select_img_div",function(){
+	  $(".touchImg").on("taphold",function(event){
+		  isTapHold = true;
+		  //alert("taphold");
+		  console.log("isDefaultPrevented:"+event.isDefaultPrevented());
+		  event.preventDefault(); 
+		  event.stopPropagation(); 
+		  console.log("isDefaultPrevented:"+event.isDefaultPrevented());
+          //oInp.innerHTML = "Touch started (" + event.touches[0].clientX + "," + event.touches[0].clientY + ")";  
+          console.log("start");
+          //var target = document.elementFromPoint(event.clientX, event.clientY);
+          var target = event.target;
+          console.log(target);
+          console.log(event);
+          var $target = $(target);
+          if($target.hasClass("touchImg")){
+          	$target.addClass("dashBorder");
+          	startTouchImg = target;
+              lastTouchImg = target;
+              
+             // $imgEdit =  $(target);//当前click时间的图片
+              
+               tapEvt = { clientX: event.clientX
+							, clientY: event.clientY
+						};
+               //console.log("tapEvt:");
+               //console.log("tapEvt:" + tapEvt.clientX + "-" + tapEvt.clientY);
+              dragEl = target;
+              var
+				  rect = dragEl.getBoundingClientRect()
+				, css = _css(dragEl)
+				, ghostRect
+				;
+              ghostEl = target.cloneNode(true);
+              _css(ghostEl, 'top', rect.top - parseInt(css.marginTop, 0));
+				_css(ghostEl, 'left', rect.left - parseInt(css.marginLeft, 0));
+				_css(ghostEl, 'width', rect.width);
+				_css(ghostEl, 'height', rect.height);
+				_css(ghostEl, 'opacity', '0.8');
+				_css(ghostEl, 'position', 'fixed');
+				_css(ghostEl, 'zIndex', '100000');
+
+				rootEl.appendChild(ghostEl);
+				// Fixing dimensions.
+				ghostRect = ghostEl.getBoundingClientRect();
+				_css(ghostEl, 'width', rect.width*2 - ghostRect.width);
+				_css(ghostEl, 'height', rect.height*2 - ghostRect.height);
+				
+          }
+	  });   
+		$(".touchImg").on("tap",function(event){
+	     //alert("tap");
+			$(this).parent().children(".defaultImg").addClass("hidden");
+			event.preventDefault();
+			if(isTapHold){
+				return;
+			}
+			isTap = true;
+		console.log(event);
+	     $imgEdit =  $(event.target);//当前click时间的图片
+	     showModifyImgDiv();
+	  });  
+//	});
+	
   //var touchDiv = document.getElementById("select_img_div");
   var touchSpans = document.getElementsByClassName("touchImg"); //touchImg
    /*  document.addEventListener('touchstart',touch, false);  
     document.addEventListener('touchmove',touch, false);  
     document.addEventListener('touchend',touch, false);   */
-   console.log(touchSpans);
+   //console.log(touchSpans);
     for(var i = 0; i < touchSpans.length; i ++ ){
     	touchSpans[i].addEventListener('touchstart',touch, false);  
     	touchSpans[i].addEventListener('touchmove',touch, false);  
     	touchSpans[i].addEventListener('touchend',touch, false); 
+    	//touchSpans[i].addEventListener('click',function(){alert("click2");}, false);
     }
     
     function touch (event){  
@@ -30,21 +100,23 @@ function load (){
             case "touchstart":  
             	event.preventDefault(); 
                 //oInp.innerHTML = "Touch started (" + event.touches[0].clientX + "," + event.touches[0].clientY + ")";  
-                console.log("start");
+                //console.log("start");
+                return;
                 var target = document.elementFromPoint(event.touches[0].clientX, event.touches[0].clientY);
-                console.log(target);
-                console.log(event);
+                //console.log(target);
+                //console.log(event);
                 var $target = $(target);
                 if($target.hasClass("touchImg")){
                 	$target.addClass("dashBorder");
                 	startTouchImg = target;
 	                lastTouchImg = target;
 	                
-	                $imgEdit =  $(target);//当前click时间的图片
+	               // $imgEdit =  $(target);//当前click时间的图片
 	                
 	                 tapEvt = { clientX: event.touches[0].clientX
 								, clientY: event.touches[0].clientY
 							};
+	                 
 	                dragEl = target;
 	                var
 					  rect = dragEl.getBoundingClientRect()
@@ -69,12 +141,48 @@ function load (){
                 }
                 break;  
             case "touchmove":  
+            	console.log("move:");
+            	var clientY = event.touches[0].clientY;
+                console.log(event.touches[0].clientX + "-" +event.touches[0].clientY);
+                //console.log("屏幕宽高为："+screen.width+"*"+screen.height);
+                //console.log(document.body.clientHeight);
+                //console.log(document.body.offsetHeight);
+                //console.log(document.body.scrollHeight);
+                console.log(window.screen.availHeight);
+                var availHeight = window.screen.availHeight;
+                var top = $(document).scrollTop();
+                console.log("top:"+top);
+                if(clientY < 20 && top > 300){
+                	top = top - 250;
+            		$('html,body').animate({scrollTop: top+'px'}, 100);
+                }else{
+                	var flag = clientY > (availHeight - 120) ? true : false;
+                	console.log("clientY:"+clientY + ";availHeight:"+availHeight+";flag:"+flag);
+                	if(flag){
+                		top = top + 250;
+                		$('html,body').animate({scrollTop: top+'px'}, 300);
+                	}
+                }
+                console.log("====");
+            	if(!isTapHold){
+            		return;
+            	}else{
+            		event.preventDefault(); 
+            		if(isFirstTapEvt){
+            			tapEvt = { clientX: event.touches[0].clientX
+            					, clientY: event.touches[0].clientY
+            			};
+            		}
+            		isFirstTapEvt = false;
+            	}
+            	/*if(isTap){
+            		return;
+            	}*/
             	_css(ghostEl, 'display', 'none');
                 //oInp.innerHTML = "<br/>Touch moved (" + event.touches[0].clientX + "," + event.touches[0].clientY + ")";  
-                console.log("move");
                 var target = document.elementFromPoint(event.touches[0].clientX, event.touches[0].clientY);
-                console.log(target);
-                console.log(event);
+                //console.log(target);
+                //console.log(event);
                 var $target = $(target);
                 if($target.hasClass("touchImg")){
                 	lastTouchImg = target;
@@ -100,14 +208,27 @@ function load (){
 			
 			    //event.preventDefault();  
 			    _css(ghostEl, 'display', '');
+			    sleep(1);
                 break;  
             case "touchend":  
+            	console.log("end");
+            	if(!isTapHold){
+            		return;
+            	}else{
+            		isFirstTapEvt = true;
+            	}
+            	/*isTapHold = false;
+            	console.log("isTap:"+isTap);
+            	if(isTap){
+            		return;
+            	}
+            	isTap = false;*/
             	if( ghostEl ){
 					ghostEl.parentNode.removeChild(ghostEl);
 				}
-            	
+            	ghostEl = null;
                 //oInp.innerHTML = "<br/>Touch end (" + event.changedTouches[0].clientX + "," + event.changedTouches[0].clientY + ")";  
-                console.log("end");
+                
                 console.log(event);
                 var $srctarget = $(event.target);
                 $srctarget.removeClass("dashBorder");
@@ -134,34 +255,34 @@ function load (){
                 	console.log(endimgSpan);
                 	if(startImgOrder == endImgOrder){
                 		//click
-                		showModifyImgDiv();
+                		//showModifyImgDiv();
                 	}else if(startImgOrder < endImgOrder){
                 		var startTopDiv = startimgSpan.parent().parent();
-                		var $startImg = startTopDiv.find("img");
+                		var $startImg = startTopDiv.find("img.touchImg");
                 		var endTopDiv = endimgSpan.parent().parent();
                 		var preTopDiv = startTopDiv;
                 		var nextTopDiv = startTopDiv.next().hasClass("pageNumDiv") ? startTopDiv.next().next() : startTopDiv.next();
                 		while(nextTopDiv.length > 0 && !nextTopDiv.hasClass("pageNumDiv") && !(nextTopDiv[0] === endTopDiv[0])){
-                			preTopDiv.find("span").append(nextTopDiv.find("img"));
+                			preTopDiv.find("span").append(nextTopDiv.find("img.touchImg"));
                 			preTopDiv = nextTopDiv;
                 			nextTopDiv = nextTopDiv.next().hasClass("pageNumDiv") ? nextTopDiv.next().next() : nextTopDiv.next();
                 		}
-                		preTopDiv.find("span").append(nextTopDiv.find("img"));
+                		preTopDiv.find("span").append(nextTopDiv.find("img.touchImg"));
                 		nextTopDiv.find("span").append($startImg);
                 	}else{
                 		//startImgOrder > endImgOrder
                 		var endTopDiv = startimgSpan.parent().parent();
                 		var startTopDiv = endimgSpan.parent().parent();
-                		var $startImg = startTopDiv.find("img");
-                		var $endImg = endTopDiv.find("img");
+                		var $startImg = startTopDiv.find("img.touchImg");
+                		var $endImg = endTopDiv.find("img.touchImg");
                 		var afterTopDiv = endTopDiv;
                 		var prevTopDiv = afterTopDiv.prev().hasClass("pageNumDiv") ? afterTopDiv.prev().prev() : afterTopDiv.prev();
                 		while(prevTopDiv.length > 0 && !prevTopDiv.hasClass("pageNumDiv") && !(prevTopDiv[0] === startTopDiv[0])){
-                			afterTopDiv.find("span").append(prevTopDiv.find("img"));
+                			afterTopDiv.find("span").append(prevTopDiv.find("img.touchImg"));
                 			afterTopDiv = prevTopDiv;
                 			prevTopDiv = prevTopDiv.prev().hasClass("pageNumDiv") ? prevTopDiv.prev().prev() : prevTopDiv.prev();
                 		}
-                		afterTopDiv.find("span").append(prevTopDiv.find("img"));
+                		afterTopDiv.find("span").append(prevTopDiv.find("img.touchImg"));
                 		prevTopDiv.find("span").append($endImg);
                 		
                 	}
@@ -171,6 +292,7 @@ function load (){
                 	
                 //}
                 console.log("end2");
+                isTapHold = false;
                 break;  
            
         }  
@@ -195,3 +317,9 @@ function _css(el, prop, val){
 }
 
 window.addEventListener('load',load, false);  
+
+function   sleep(n)   
+{   
+    var  start=new Date().getTime();   
+    while(true) if(new Date().getTime()-start>n)  break;   
+}

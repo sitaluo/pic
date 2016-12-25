@@ -95,11 +95,12 @@ public class OrderController {
     public ModelAndView myOrder(HttpServletRequest request,OrderParam param) throws Exception { 
 		ModelAndView mv = new ModelAndView("weixin/order/myOrder");
 		List<Order> orderList = new ArrayList<Order>();
-		if(param.getPhone() != null){
-			User curUser = userService.getByPhone(param.getPhone());
-			if(curUser != null){
-				orderList = orderService.listByUserId(curUser.getId());
-			}
+		User curUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER_KEY);
+		if(curUser == null || param.getPhone() != null){
+			curUser = userService.getByPhone(param.getPhone());
+		}
+		if(curUser != null){
+			orderList = orderService.listByUserId(curUser.getId());
 		}
 		mv.addObject("orderList",orderList);
         return mv; 
