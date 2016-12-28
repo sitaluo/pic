@@ -85,8 +85,15 @@ public class WeixinMessageCoreService {
 			article.setTitle("威锋十年 | “寻找最美的你“美女锋友征集令");
 			article.setDescription("十周年之际，是时候晒出论坛里的美女了");
 			article.setPicUrl("http://mmbiz.qpic.cn/mmbiz_jpg/4yxVdszlIsaRBL4l2A7PXvZ3l8CbcsdYka7ubibNe3Gjiba51hcibn7UHTzxdricqRWD7FVcef5heeic2g899JFCQiaw/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1");
-			article.setUrl("http://mp.weixin.qq.com/s?__biz=MzIzODU4ODgzMw==&mid=2247484907&idx=1&sn=6a40ccc1b54c38f9578a675be12912cf&chksm=e9364325de41ca33e00dd34b5bd45d941acc75869047f000775110d54a70ede6dedc0da27347#rd");
+			article.setUrl("http://mp.weixin.qq.com/s/C7Te-C2rWYe_mmKJQZNGFQ");
 			articleList.add(article);  
+			
+			Article article2 = new Article();
+			article2.setTitle("威锋十周年抽奖活动");
+			article2.setDescription("");
+			article2.setPicUrl("http://mmbiz.qpic.cn/mmbiz_jpg/4yxVdszlIsbPUFo6iaLaSdOib8JV3CYeaFzibCCAzEZpgL8icr8vZ1hRhupVC1KBJvNjs9ZkaFmic2cdRSXvlhRY8Lw/640?wx_fmt=jpeg&tp=webp&wxfrom=5&wx_lazy=1");
+			article2.setUrl("http://mp.weixin.qq.com/s/w2XknLEAw9TUZtz7eYq1cg");
+			articleList.add(article2);  
 			// 设置图文消息个数
 			newsMessage.setArticleCount(articleList.size());
 			// 设置图文消息包含的图文集合

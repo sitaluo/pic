@@ -29,24 +29,24 @@ public class UserMapperTest {
 
 	@Test
 	public void testFindUserById() throws Exception {
-		UserMapper userMapper =  (UserMapper) applicationContext.getBean("userMapper");
+		/*UserMapper userMapper =  (UserMapper) applicationContext.getBean("userMapper");
 		
 		UserExample example = new UserExample();
 		UserExample.Criteria cri = example.createCriteria();
 		//cri.andOpenIdEqualTo("asdas");
 		List<User> userList = userMapper.selectByExample(example);
-		System.out.println(userList);
+		System.out.println(userList);*/
 	}
 
 	@Test
 	public void testFindUserById2() throws Exception {
-		ImageMapper imageMapper =  (ImageMapper) applicationContext.getBean("imageMapper");
+		/*ImageMapper imageMapper =  (ImageMapper) applicationContext.getBean("imageMapper");
 		
 		ImageExample example = new ImageExample();
 		ImageExample.Criteria cri = example.createCriteria();
 		//cri.andOpenIdEqualTo("asdas");
 		List<Image> userList = imageMapper.selectByExample(example);
-		System.out.println(userList);
+		System.out.println(userList);*/
 	}
 	
 	

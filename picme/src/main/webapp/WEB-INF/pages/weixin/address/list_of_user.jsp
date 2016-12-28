@@ -154,6 +154,15 @@ $(function(){
 		showDiv.find("input[name=person]").val("");
 		showDiv.find("input[name=region]").val("");
 		showDiv.find("input[name=phone]").val("");
+		
+		var addressLength = '${fn:length(addressList)}';
+		var userId = '${current_user.id}';
+		if(Number(addressLength) == 0 && Number(userId) > 0){
+			//如果第一次进来默认是当前用户的姓名和电话
+			showDiv.find("input[name=person]").val("${current_user.name}");
+			showDiv.find("input[name=phone]").val("${current_user.phone}");
+		}
+		
 		showDiv.modal("show");
 	});
 	$("#saveAddressBtn").click(function(){

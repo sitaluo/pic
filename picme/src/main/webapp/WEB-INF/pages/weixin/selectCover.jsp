@@ -35,7 +35,7 @@
 	border: 5px solid #F7F7F7;
 }
 .border5px_select{
-	border: 5px solid blue;
+	border: 5px solid #428bca;
 }
 
 </style>

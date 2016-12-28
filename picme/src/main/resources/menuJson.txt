@@ -1,0 +1,34 @@
+{
+    "button": [
+        {
+            "type": "view", 
+            "name": "威锋抽奖", 
+            "url": "http://mp.weixin.qq.com/s/9eyZc8K22ih7-_sDT2wl5A"
+        }, 
+        {
+            "type": "view", 
+            "name": "摄影大咖", 
+            "url": "http://mp.weixin.qq.com/s/u-WUlu4B_1WyBMD_LE9PZw"
+        }, 
+        {
+            "name": "发现影迷", 
+            "sub_button": [
+                {
+                    "type": "view", 
+                    "name": "关于影迷", 
+                    "url": "http://mp.weixin.qq.com/s/ivFZSXE0uUNsxo0rOXnsjA"
+                }, 
+                {
+                    "type": "view", 
+                    "name": "影迷团队", 
+                    "url": "http://mp.weixin.qq.com/s/N_ZHjuRtlvTLOH4TvEDCAQ"
+                }, 
+                {
+                    "type": "view", 
+                    "name": "影迷活动", 
+                    "url": "http://mp.weixin.qq.com/s/YxPibkyNUmk104BWjbwRog"
+                }
+            ]
+        }
+    ]
+}

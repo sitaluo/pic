@@ -2,14 +2,20 @@ package com.picme.weixin.controller;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -127,4 +133,15 @@ public class UploadController {
         return "weixin/uploadImg";  
     }  
       
+    @RequestMapping("download")    
+    public ResponseEntity<byte[]> download() throws IOException {    
+        String path="D:\\workspace\\.metadata\\.plugins\\org.eclipse.wst.server.core\\tmp0\\wtpwebapps\\springMVC\\WEB-INF\\upload\\图片10（定价后）.xlsx";  
+        File file=new File(path);  
+        HttpHeaders headers = new HttpHeaders();    
+        String fileName=new String("你好.xlsx".getBytes("UTF-8"),"iso-8859-1");//为了解决中文名称乱码问题  
+        headers.setContentDispositionFormData("attachment", fileName);   
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);   
+        return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),    
+                                          headers, HttpStatus.CREATED);    
+    }   
 }  

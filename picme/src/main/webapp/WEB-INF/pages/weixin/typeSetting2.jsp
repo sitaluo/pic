@@ -314,6 +314,7 @@ function downloadAndUploadImg(serverId,order,isShowLoading){
 		success : function(resp, textStatus) {
 			//console.info(resp);
 			if (1 == resp.ret_flag) {
+				//alert(order +"-success");
 				images.serverId2uploadStateMap[serverId] = 1;//1成功
 				console.log("上传到服务器");
 				if(isShowLoading){//单个上传进度
@@ -348,6 +349,9 @@ function downloadAndUploadImg(serverId,order,isShowLoading){
 			}
 		},
 		error : function(request, textStatus, errorThrown) {
+			$("#upImgDiv"+ order).find(".glyphicon-ok-circle").addClass("hidden").removeClass("show");
+			$("#upImgDiv"+ order).find(".glyphicon-repeat").addClass("show").removeClass("hidden");
+			$("#upImgDiv"+ order).find(".text_msg").html("上传失败");
 			upload_fail_num++;
 			checkLoading();
 			if(isShowLoading){//单个上传进度
@@ -399,12 +403,20 @@ $(function(){
 		}
 	});
 	
+	var isFirstChoose = true;
 	$("#batchFileBtn").click(function(){
 		var step = $("input[name=step]").val();
 		
 		if(step == 0){
 			//添加图片
 			//$("#batchFile").trigger("click");
+			if(isFirstChoose){
+				isFirstChoose  = false;
+				layer.open({
+				    content: '温馨提示：为保障印刷质量，选择图片后请依次点击屏幕下方“预览”、“原图”、“完成”按钮'
+				    ,btn: '我知道了'
+				  });
+			}
 			aaa();
 		}
 		if(step == 1){

@@ -43,6 +43,7 @@
 <div class="" style="padding:10px;">
 	<img src="${basePath }static/upload/sysImgs/Rectangle.png" style="height:16px;"> 查看影集
 </div>  
+
 <div id="step1_div" >
 	<div class="col-xs-12 col-sm-12 col-md-12 padding10px" style="background-color: #F7F7F7;">
 	  <div class="col-xs-6 col-sm-6 col-md-6 padding15px "><img src="${basePath }${paramTemp.coverImg }" class="img-responsive" style="border:0px dashed gray;"></div>

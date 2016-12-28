@@ -96,7 +96,7 @@ public class OrderController {
 		ModelAndView mv = new ModelAndView("weixin/order/myOrder");
 		List<Order> orderList = new ArrayList<Order>();
 		User curUser = (User) request.getSession().getAttribute(Constants.CURRENT_USER_KEY);
-		if(curUser == null || param.getPhone() != null){
+		if( (curUser == null && param.getPhone() != null) || param.getPhone() != null ){
 			curUser = userService.getByPhone(param.getPhone());
 		}
 		if(curUser != null){
