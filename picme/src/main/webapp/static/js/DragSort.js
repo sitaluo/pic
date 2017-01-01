@@ -65,16 +65,18 @@ function load (){
           }
 	  });   
 		$(".touchImg").on("tap",function(event){
-	     //alert("tap");
+			//alert("tap");
 			$(this).parent().children(".defaultImg").addClass("hidden");
 			event.preventDefault();
 			if(isTapHold){
 				return;
 			}
 			isTap = true;
-		console.log(event);
-	     $imgEdit =  $(event.target);//当前click时间的图片
-	     showModifyImgDiv();
+			console.log(event);
+		    var  $imgEdit =  $(event.target);//当前click时间的图片
+		     alert($imgEdit);
+		     showModifyImgDiv($imgEdit);
+	     
 	  });  
 //	});
 	

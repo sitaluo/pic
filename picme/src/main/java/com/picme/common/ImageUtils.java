@@ -145,15 +145,25 @@ public class ImageUtils {
      * @throws IOException
      */
     public static void mergeImage(File file1, File file2,String path,String newFileName) throws IOException {        
-        BufferedImage image1 = ImageIO.read(file1);  
-        BufferedImage image2 = ImageIO.read(file2);  
+        BufferedImage image1 = ImageIO.read(new FileInputStream(file1));  
+        BufferedImage image2 = ImageIO.read(new FileInputStream(file2));  
+        if(image1 == null || image2 == null){
+        	return;
+        }
         
         BufferedImage combined = new BufferedImage(merge_img_width, merge_img_height, BufferedImage.TYPE_INT_RGB);  
+        
+        int[] img1_w_h = getThumbImg(image1);
+        int[] img2_w_h = getThumbImg(image2);
         // paint both images, preserving the alpha channels  
-        int width1 = image1.getWidth();
+        /*int width1 = image1.getWidth();
         int height1 = image1.getHeight();
         int width2 = image2.getWidth();
-        int height2 = image2.getHeight();
+        int height2 = image2.getHeight();*/
+        int width1 = img1_w_h[0];
+        int height1 = img1_w_h[1];
+        int width2 = img2_w_h[0];
+        int height2 = img2_w_h[1];
         int startX1 = merge_img_width/2/2 - width1/2;
         int startY1 = merge_img_height/2 - height1/2;
         int startX2 = merge_img_width/2/2 - width2/2 + merge_img_width/2;
@@ -161,12 +171,28 @@ public class ImageUtils {
         Graphics g = combined.getGraphics();
         g.setColor(Color.white);//这里设置背景颜色
         g.fillRect(0, 0, merge_img_width, merge_img_height);//这里填充背景颜色
-        g.drawImage(image1, startX1, startY1, null);  
-        g.drawImage(image2, startX2, startY2, null);
+        g.drawImage(image1, startX1, startY1,width1,height1, null);  
+        g.drawImage(image2, startX2, startY2,width2,height2, null);
         // Save as new image  
         ImageIO.write(combined, "JPG", new File(path, newFileName));  
     } 
     
+    private static int[] getThumbImg(BufferedImage bufferedImage){
+    	int maxWidthOrHeight = inner_square_width;
+        int originalWidth = bufferedImage.getWidth();
+        int originalHeight = bufferedImage.getHeight();
+        int newHeight;
+        int newWidth;
+        if(originalWidth > originalHeight){
+        	newWidth = maxWidthOrHeight;
+        	newHeight = (int) (((double)newWidth / (double)originalWidth) * originalHeight);
+        }else{
+        	newHeight = maxWidthOrHeight;
+        	newWidth = (int) (((double)newHeight / (double)originalHeight) * originalWidth);
+        }
+        int[] rt = new int[]{newWidth,newHeight};
+        return rt;
+    }
     /**
      *  把8张图片合成一张 logo形的图片
      * @param sourceImages 4张竖着的图片，2张横着的图片，2张正方形的图片
@@ -423,11 +449,11 @@ public class ImageUtils {
     	returnKeyList2.addAll(verticalImageKeyList);
     	returnKeyList2.addAll(transverseImageKeyList);
     	returnKeyList2.addAll(squareImageKeylist);
-    	System.out.println("choose8Image:");
+    	/*System.out.println("choose8Image:");
     	for (Integer i : returnKeyList2) {
     		System.out.println(images.get(i));
 			
-		}
+		}*/
     	List<File> retImageList = new ArrayList<File>();
     	for (Integer i : returnKeyList2) {
     		retImageList.add(images.get(i));

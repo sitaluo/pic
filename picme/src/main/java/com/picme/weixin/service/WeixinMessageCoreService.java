@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.stereotype.Service;
+
 import com.picme.weixin.entity.message.resp.Article;
 import com.picme.weixin.entity.message.resp.Image;
 import com.picme.weixin.entity.message.resp.ImageMessage;
@@ -17,6 +19,7 @@ import com.picme.weixin.utils.MessageUtil;
  * 核心服务类
  * 
  */
+@Service
 public class WeixinMessageCoreService {
 	
 	//private static Logger log = LoggerFactory.getLogger(CoreService.class);
@@ -26,7 +29,7 @@ public class WeixinMessageCoreService {
 	 * @param request
 	 * @return
 	 */
-	public static String processRequest(HttpServletRequest request) {
+	public String processRequest(HttpServletRequest request) {
 		String respMessage = null;
 		try {
 			// xml请求解析
@@ -120,7 +123,7 @@ public class WeixinMessageCoreService {
 					//image.setMediaId("4dDNVUL-pr1ol6UKUPnGe2GeORy8TSa1O57AwiTNCc8s0gbpRc-gW0axNniypeFC");
 					imageMessage.setImage(image);
 					respMessage = MessageUtil.imageMessageToXml(imageMessage);
-				System.out.println(respMessage);
+				//System.out.println(respMessage);
 					
 				}
 			}

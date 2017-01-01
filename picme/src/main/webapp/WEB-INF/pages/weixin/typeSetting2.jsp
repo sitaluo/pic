@@ -32,6 +32,9 @@
 .dashBorder{
   border: 1px dashed;
 }
+.touchImg{
+	-webkit-touch-callout:none;
+}
 </style>
 </head>
 <body class="" id="body">
@@ -128,16 +131,16 @@
  	<input type="hidden" name="step" value="0">
 </div>
 <!-- 修改图片 -->
- <div id="modify_img_div" class="hidden" style="position: fixed;top:0px;height:100%;width:100;background-color: white;">
-		<div style="padding: 20px;border: 1px solid grey;">
-			<div style="border: 1px solid grey;">
+ <div id="modify_img_div" class="hidden" style="position: fixed;top:0px;height:100%;width:100%;background-color: white;text-align: center;">
+		<div style="padding: 20px;border: 0px solid grey;max-height:380px;">
+			<div style="border: 1px solid grey;height:350px;padding: 10px;">
 				<img  id="modify_img" src="${basePath }static/upload/sysImgs/noimg.png"
-				class="img-responsive" alt="">
+				class="img-responsive" alt="" style="width:auto;max-height: 100%;">
 			</div>
 		</div>
 		<div>
-			<button id="modify_img_btn" class="modify_img_btn btn btn-link">更换图片</button>
-			<button id="modify_img_cancel_btn" class="modify_img_cancel_btn btn btn-link">取消</button>
+			<button id="modify_img_btn" class="modify_img_btn btn btn-primary">更换图片</button>
+			<button id="modify_img_cancel_btn" class="modify_img_cancel_btn btn  btn-default">取消</button>
 		</div>
 		<input type="file" id="modify_img_file" onchange="modifyFileSelected(this);" class="hidden">
 	</div> 
@@ -182,8 +185,21 @@ var upload_fail_num = 0;
 var loadingIndex = null;
 var localIdArr = new Array();//
 
+var isAlertError = false;//debug用
 
-
+Array.prototype.contains = function ( needle ) {
+	  for (i in this) {
+	    if (this[i] == needle) return true;
+	  }
+	  return false;
+	}
+Array.prototype.contains2 = function ( needle ) {
+	  for (i in this) {
+	    if (this[i] == needle) return i;
+	  }
+	  return -1;
+	}	
+	
 function aaa(){
 	//localIdArr = null;
 	
@@ -205,21 +221,34 @@ function aaa(){
 	        var needNum = MAX_PIC_NUM - have_num;
 	    	var num = localIds.length > needNum ? needNum : localIds.length;
 	    	
+	    	var repeatNum = 0;
 	        for(var i = 0; i< num; i ++ ){
-	        	localIdArr.push(localIds[i]);
-	        	images.localIds.push(localIds[i]);
-	        	//$("img[name=preview"+(i+1)+"]").attr("src",localIds[i]);
-	        	var imgTemp = $("img[name^=preview].noPreImg").first();
-	        	imgTemp.removeClass("hidden");
-	        	imgTemp.parent().children(".defaultImg").addClass("hidden");
-	            imgTemp.prop("src",localIds[i]);
-	            imgTemp.removeClass("noPreImg");
-	            var imgTemp2 = $("img[name^=up_preview].noPreImg").first();
-	            imgTemp2.prop("src",localIds[i]);
-	            imgTemp2.removeClass("noPreImg");
+	        	 //解决IOS无法上传的坑
+		        if (localIds[i].indexOf("wxlocalresource") != -1) {
+		        	localIds[i] = localIds[i].replace("wxlocalresource", "wxLocalResource");
+		        }
+	        	 if(!localIdArr.contains(localIds[i])){
+		        	localIdArr.push(localIds[i]);
+		        	images.localIds.push(localIds[i]);
+		        	//$("img[name=preview"+(i+1)+"]").attr("src",localIds[i]);
+		        	var imgTemp = $("img[name^=preview].noPreImg").first();
+		        	imgTemp.removeClass("hidden");
+		        	imgTemp.parent().children(".defaultImg").addClass("hidden");
+		            imgTemp.prop("src",localIds[i]);
+		            imgTemp.removeClass("noPreImg");
+		            var imgTemp2 = $("img[name^=up_preview].noPreImg").first();
+		            imgTemp2.prop("src",localIds[i]);
+		            imgTemp2.removeClass("noPreImg");
+	        	 }else{
+	        		 repeatNum ++;
+	        		 layer.open({
+	        			    content: '选择了和之前相同的图片，请需要重新选择没有选过的图片'
+	        			    ,btn: '我知道了'
+	        			  });
+	        	 }
 	        }
 	        
-	        have_num = have_num + num;
+	        have_num = have_num + num - repeatNum;
 	    	$("#batchFileBtn").html("添加图片("+have_num + "/" + MAX_PIC_NUM + ")");
 	    	if(have_num >= MAX_PIC_NUM){
 	    		$("#batchFileBtn").html("立即上传");
@@ -228,7 +257,9 @@ function aaa(){
 	    	//alert("选择图片2："+localIds);
 	    },
 	    fail:function(res){
-	    	//alert(JSON.stringify(res));
+	    	if(isAlertError){
+	    		alert("选择图片失败"+JSON.stringify(res));
+	    	}
 	    	layer.open({
     		    content: "选择图片失败，请重新选择"
     		    ,btn: '确定'
@@ -268,6 +299,9 @@ function weixinUpload(localId,order,isShowLoading){
 	        
 	    },
 		fail:function (res) {
+			if(isAlertError){
+	    		alert("wx.uploadImage fail:"+JSON.stringify(res));
+	    	}
 			if(isShowLoading){//单个上传进度
 				layer.close(singleIndex);
 				layer.open({
@@ -339,6 +373,12 @@ function downloadAndUploadImg(serverId,order,isShowLoading){
 				$("#upImgDiv"+ order).find(".text_msg").html("上传失败");
 				console.log("上传到服务器失败了");
 				upload_fail_num ++;
+				if(isAlertError){
+		    		alert(JSON.stringify(res));
+		    	}
+				if(isAlertError){
+		    		alert("下载图片失败："+JSON.stringify(errorThrown));
+		    	}
 			}
 			
 			checkLoading();
@@ -358,6 +398,9 @@ function downloadAndUploadImg(serverId,order,isShowLoading){
 				layer.close(singleIndex);
 			}
 			console.log("网络连接失败");
+			if(isAlertError){
+	    		alert("下载图片 网络连接失败"+JSON.stringify(errorThrown));
+	    	}
 		}
 	});
 }
@@ -403,7 +446,7 @@ $(function(){
 		}
 	});
 	
-	var isFirstChoose = true;
+	var isFirstChoose = false;
 	$("#batchFileBtn").click(function(){
 		var step = $("input[name=step]").val();
 		
@@ -412,12 +455,20 @@ $(function(){
 			//$("#batchFile").trigger("click");
 			if(isFirstChoose){
 				isFirstChoose  = false;
-				layer.open({
-				    content: '温馨提示：为保障印刷质量，选择图片后请依次点击屏幕下方“预览”、“原图”、“完成”按钮'
-				    ,btn: '我知道了'
-				  });
+				var idx =  layer.open({
+					    content: '温馨提示：为保障印刷质量，选择图片后请依次点击屏幕下方“预览”、“原图”、“完成”按钮'
+					    ,btn: ['我知道了']
+					    ,yes: function(index){
+					    	//aaa();
+					    	layer.close(idx);
+					    	aaa();
+					    }
+					  });
+			}else{
+				aaa();
 			}
-			aaa();
+			
+			
 		}
 		if(step == 1){
 			//准备上传
@@ -476,22 +527,70 @@ $(function(){
 	});
 	
 //修改图片start
-	/* $(".imgEdit").click(function(){
-		$imgEdit =  $(this);
-		showModifyImgDiv();
-	}); */
 	$(".modify_img_cancel_btn").click(function(){
+		//取消修改图片
 		hiddenModifyImgDiv();
 	 });
 	$(".modify_img_btn").click(function(){
+		//修改图片
 		console.log($(this).parent().next());
-		$("#modify_img_file").trigger("click");
+		//$("#modify_img_file").trigger("click");//原生input file选择图片
+		wx.chooseImage({
+		    count: 1, // 默认9
+		    sizeType: ['original'], // 可以指定是原图还是压缩图，默认二者都有
+		    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+		    success: function (res) {
+		        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
+		        console.log("选择图片："+localIds);
+		       if(localIds.length > 0){
+		    	   var localId = localIds[0];
+		    	 //解决IOS无法上传的坑
+			        if (localId.indexOf("wxlocalresource") != -1) {
+			        	localId = localId.replace("wxlocalresource", "wxLocalResource");
+			        }
+		    		
+			        if(!localIdArr.contains(localId)){
+			        	 var oldLocalId = $currentEditImg.attr("src");
+				    	 var indexOflocalId = localIdArr.contains2(oldLocalId);
+				    	 if(indexOflocalId > -1){
+				    		 //localIdArr.push(localId);
+				    		 localIdArr[indexOflocalId] = localId;
+					        	//images.localIds.push(localId);
+					        	images.localIds[indexOflocalId] = localId;
+					        	 $currentEditImg.attr("src",localId);
+				    	 }else{
+				    		 console.log("error:indexOflocalId>-1");
+				    	 }
+			        	
+		        	 }else{
+		        		 layer.open({
+		        			    content: '选择了和之前相同的图片，需要重新选择没有选过的图片'
+		        			    ,btn: '我知道了'
+		        			  });
+		        	 }
+		    	  
+		    	   hiddenModifyImgDiv();
+		       }
+		    },
+		    fail:function(res){
+		    	if(isAlertError){
+		    		alert("选择图片失败"+JSON.stringify(res));
+		    	}
+		    	layer.open({
+	    		    content: "选择图片失败，请重新选择"
+	    		    ,btn: '确定'
+	    		  }); 
+		    }
+		});
 	 });
 	//修改图片end
 });
 
-
-function showModifyImgDiv(){
+var $currentEditImg = null;
+function showModifyImgDiv($imgCurrentEdit){
+	$currentEditImg = $imgCurrentEdit;
+	var src = $imgCurrentEdit.attr("src");
+	$("#modify_img_div").find("img").attr("src",src);
 	$("#modify_img_div").addClass("show").removeClass("hidden");
 }
 function hiddenModifyImgDiv(){

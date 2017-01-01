@@ -9,8 +9,7 @@
 </head>
 <body class="" id="body">
   <div class="" style="padding:10px;">
-	<img src="${basePath }static/upload/sysImgs/Rectangle.png" style="height:16px;"> 我的订单
-	<a href="${basePath }weixin/code" class="btn btn-sm pull-right">返回首页</a>
+	<img src="${basePath }static/upload/sysImgs/Rectangle.png" style="height:16px;"> 所有订单
   </div>
 <div id="container" class="container" >
 	 <form role="form" id="form">
@@ -24,7 +23,7 @@
   <c:if test="${empty orderList }">
  	 <div class="row">
 	  <div class="col-xs-12 col-sm-12 col-md-12">
-	  	<p>亲，您还没有订单哦~</p>
+	  	<p>亲，还没有订单哦~</p>
 	  </div>
 	</div>
 	<hr class="col-xs-12 col-sm-12 col-md-12 ">
@@ -33,7 +32,7 @@
 	<div class="row margin0px">
 		<c:forEach items="${orderList }" var="item">
 			<div class="col-xs-12 col-sm-12 col-md-12 ">
-				 <div class="col-xs-3 col-sm-3 col-md-3"><a href="${basePath }weixin/order/info?orderId=${item.id}">
+				 <div class="col-xs-3 col-sm-3 col-md-3"><a href="${basePath }admin/order/edit?orderId=${item.id}">
 				 影集</a>
 			 	 </div>
 			  	 <div class="col-xs-6 col-sm-6 col-md-6">

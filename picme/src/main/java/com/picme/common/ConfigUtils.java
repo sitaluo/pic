@@ -13,11 +13,15 @@ public class ConfigUtils {
 	}
 
 	public static String getAppID() {
-		return props.get("AppID");
+		return props.get("appID");
 	}
 	
 	public static String getAppSecret(){
-		return props.get("AppSecret");
+		return props.get("appSecret");
+	}
+	
+	public static String getWeiXinToken(){
+		return props.get("weiXinToken");
 	}
 	
 	public static void main(String[] args) {

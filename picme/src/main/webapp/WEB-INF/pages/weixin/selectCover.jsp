@@ -62,6 +62,7 @@
 				<div class="carousel-inner">
 					<div class="item active">
 						<img src="${basePath }static/upload/sysImgs/cover_350_1.jpg" alt="" class="img-responsive">
+						<p style="height: 20px;text-align: center;">该封面白色部分为镂空处理</p>
 						<div class="carousel-caption">
 							<h4></h4>
 							<p></p>
@@ -69,6 +70,7 @@
 					</div>
 					<div class="item">
 						<img src="${basePath }static/upload/sysImgs/cover_350_2.jpg" alt="" class="img-responsive">
+						<p style="height: 20px;"></p>
 						<div class="carousel-caption">
 							<h4></h4>
 							<p></p>
@@ -76,6 +78,7 @@
 					</div>
 					<div class="item">
 						<img src="${basePath }static/upload/sysImgs/cover_350_3.jpg" alt="" class="img-responsive">
+						<p style="height: 20px;"></p>
 						<div class="carousel-caption">
 							<h4></h4>
 							<p></p>
@@ -83,6 +86,7 @@
 					</div>
 					<div class="item">
 						<img src="${basePath }static/upload/sysImgs/cover_350_4.jpg" alt="" class="img-responsive">
+						<p style="height: 20px;"></p>
 						<div class="carousel-caption">
 							<h4></h4>
 							<p></p>
@@ -90,6 +94,7 @@
 					</div>
 					<div class="item">
 						<img src="${basePath }static/upload/sysImgs/cover_350_5.jpg" alt="" class="img-responsive">
+						<p style="height: 20px;"></p>
 						<div class="carousel-caption">
 							<h4></h4>
 							<p></p>
@@ -97,6 +102,7 @@
 					</div>
 					<div class="item">
 						<img src="${basePath }static/upload/sysImgs/cover_350_6.jpg" alt="" class="img-responsive">
+						<p style="height: 20px;"></p>
 						<div class="carousel-caption">
 							<h4></h4>
 							<p></p>
@@ -111,7 +117,6 @@
 
 		<!-- <hr class="bs-docs-separator"> -->
 		<!-- <hr> -->
-		<br>
 
 		<div id="sub" class="container" style="overflow: hidden;background-color: #F7F7F7;">
 			<div class="row rolDiv" style="overflow: hidden;position: relative;width:720px;height:120px;">
@@ -180,7 +185,9 @@
 </div> -->
 <div class="col-xs-12 col-sm-12 col-md-12 textCenter" style="position: fixed;top:auto; left: auto; right: auto;  bottom: 0px;padding: 0px;">
 	  <button class="btn btn-primary btn-lg col-xs-12 col-sm-12 col-md-12" id="next2" style="border-radius:0px;"> 下一步  </button>	
+		<a href="#" class="hidden" id="nextHref1"><span id="nextSpan">next</span></a>
 </div>
+
 <%@ include file="../common/MainJS.jsp"%>
 <script src="${staticPath }/bootstrap-3.3.0/carousel.js"></script>
 <script src="${staticPath}/js/jquery.mobile-1.4.5.js" type="text/javascript"></script>
@@ -227,26 +234,16 @@ $(function(){
 							"show").addClass("hidden");
 				});
 
-		$("#next").click(
-				function() {
-					var coverImg = $("#coverImg").val();
-					if (coverImg > 0) {
-						var path = "${basePath}weixin/typeSetting?coverImg="
-								+ coverImg;
-						window.location.href = path;
-					} else {
-						layer.open({
-							content : '请点击选择一张图片作为封面',
-							btn : '我知道了'
-						});
-					}
-				});
+		$("#sub div.row div").eq(0).trigger("click");//默认选择第一张
+		
 		$("#next2").click(
 				function() {
 					var coverImg = $("#coverImg").val();
 					if (coverImg > 0) {
 						var path = "${basePath}weixin/typeSetting2?coverImg="
 								+ coverImg;
+						$("#nextHref1").attr("href",path);
+						document.getElementById("nextSpan").click();
 						window.location.href = path;
 					} else {
 						layer.open({

@@ -42,7 +42,7 @@
 	<button class="btn btn-primary btn-lg col-xs-12 col-sm-12 col-md-12" id="next" style="border-radius:0px;"> 下一步  </button>	
 </div>
 
-
+<a href="${basePath }weixin/selectCover" class="hidden" id="nextHref">next</a>
 
 
 <%@ include file="../common/MainJS.jsp"%>
@@ -77,9 +77,15 @@ $(function(){
 			success : function(resp, textStatus) {
 				console.info(resp);
 				if (1 == resp.ret_flag) {
-					window.location.href = basePath + "weixin/selectCover";
+					var p = basePath + "weixin/selectCover?v="+ (new Date()).getTime();
+					document.getElementById("nextHref").click();
+					window.location.href = p;
 				} else {
-					
+					layer.open({
+					    content: '出错了'
+					    ,skin: 'msg'
+					    ,time: 1 //2秒后自动关闭
+					  });
 				}
 			},
 			error : function(request, textStatus, errorThrown) {

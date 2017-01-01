@@ -77,7 +77,7 @@ public class DownloadImgThread implements Runnable{
 			}else{
 				file_name = media_id + ".jpg";
 				logger.debug("微信图片获取后缀名失败"); 
-				throw new Exception("微信图片获取后缀名失败");
+				//throw new Exception("微信图片获取后缀名失败");
 			}
 			// 生成不同文件名称
 			dbFileName = "static/upload/imgs/"+file_name;
@@ -100,15 +100,15 @@ public class DownloadImgThread implements Runnable{
 			bis.close();
 			
 			//如果图片大于宽或者高大于2000像素，则压缩到2000
-			BufferedImage imageTemp = ImageIO.read(new File(path + file_name));
+			/*BufferedImage imageTemp = ImageIO.read(new File(path + file_name));
 			if(imageTemp.getWidth() > 2000 || imageTemp.getHeight() > 2000){
 				String dbFileNameTemp =  path +THUMBNAIL_PRE+ "2000" +file_name;
 				ImageUtils.thumbnail(new File(path + file_name), dbFileNameTemp);
 				dbFileName = dbFileNameTemp;
-			}
+			}*/
 			
 			ImageUtils.thumbnail(new File(path + file_name), path +THUMBNAIL_PRE+file_name);
-            //logger.debug("微信图片下载并上传到服务器成功:"+ dbFileName); 
+            logger.debug("微信图片下载并上传到服务器成功:"+ dbFileName); 
 		} catch (MalformedURLException e) {
 			logger.debug("",e);
 		} catch (IOException e) {

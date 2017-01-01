@@ -109,26 +109,28 @@
 <div style="height:70px;" class="col-xs-12 col-sm-12 col-md-12">
 </div>
  <div class="col-xs-12 col-sm-12 col-md-12 textCenter" style="position: fixed;top:auto; left: auto; right: auto;  bottom: 0px;padding: 0px;">
-	  <button class="btn btn-default btn-lg col-xs-4 col-sm-4 col-md-4" id="myOrder" style="border-radius:0px;"> 我的订单  </button>
-	  <button class="btn btn-primary btn-lg col-xs-8 col-sm-8 col-md-8" id="next" style="border-radius:0px;"> 定制影集  </button>	
+	  <a href="${basePath}weixin/order/myOrder" class="btn btn-default btn-lg col-xs-4 col-sm-4 col-md-4" id="myOrder" style="border-radius:0px;"> 我的订单  </a>
+	  <a href="${basePath}weixin/register" class="btn btn-primary btn-lg col-xs-8 col-sm-8 col-md-8" id="next" style="border-radius:0px;"> 定制影集  </a>	
 </div> 
+<a href="${basePath}weixin/register" id="nextHref"></a>
 </body>
 <%@ include file="../common/MainJS.jsp"%>
 <script src="${staticPath }/bootstrap-3.3.0/carousel.js"></script>
 <script type="text/javascript">
 		$(function(){
 			$('.carousel').carousel();
-			$("#next").click(function(){
+			/* $("#next").click(function(){
+				$("#nextHref").trigger("click");
 				//选择封面
 				//var path = "${basePath}weixin/selectCover"; 
 				var path = "${basePath}weixin/register"; 
 				window.location.href = path;
-			});
+			}); */
 			
-			$("#myOrder").click(function(){
+			/* $("#myOrder").click(function(){
 				var path = "${basePath}weixin/order/myOrder"; 
 				window.location.href = path;
-			});
+			}); */
 		});		
 </script>
 </html>

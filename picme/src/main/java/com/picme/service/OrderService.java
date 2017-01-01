@@ -53,12 +53,14 @@ public class OrderService {
 	
 	public void list(Page<Order> page) throws Exception{
 		OrderExample example = new OrderExample();
+		example.setOrderByClause("create_time desc");
 		page.setTotalCount(orderMapper.countByExample(example));
 		page.setResult(orderMapper.selectByExampleWithRowbounds(example,page.getRowBounds()));
 	}
 	
 	public List<Order> listAll() {
 		OrderExample example = new OrderExample();
+		example.setOrderByClause("create_time desc");
 		List<Order> list = orderMapper.selectByExample(example);
 		return list;
 	}
@@ -68,6 +70,7 @@ public class OrderService {
 			return null;
 		}
 		OrderExample example = new OrderExample();
+		example.setOrderByClause("create_time desc");
 		example.createCriteria().andUserIdEqualTo(userId);
 		List<Order> list = orderMapper.selectByExample(example);
 		return list;
