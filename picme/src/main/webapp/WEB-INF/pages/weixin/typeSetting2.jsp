@@ -201,16 +201,13 @@ Array.prototype.contains2 = function ( needle ) {
 	}	
 	
 function aaa(){
-	//localIdArr = null;
-	
 	wx.chooseImage({
 	    count: 8, // 默认9
-	    sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+	    sizeType: ['original'], // 可以指定是原图还是压缩图，默认二者都有
 	    sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
 	    success: function (res) {
 	        var localIds = res.localIds; // 返回选定照片的本地ID列表，localId可以作为img标签的src属性显示图片
 	        console.log("选择图片："+localIds);
-	        //alert(localIds.length + "-haveNum:" + have_num + "-MAX_PIC_NUM:" + MAX_PIC_NUM);
 	        //var have_num = images.localIds.length;
 	        if((localIds.length + have_num) > MAX_PIC_NUM){
 	    		 layer.open({
@@ -226,6 +223,7 @@ function aaa(){
 	        	 //解决IOS无法上传的坑
 		        if (localIds[i].indexOf("wxlocalresource") != -1) {
 		        	localIds[i] = localIds[i].replace("wxlocalresource", "wxLocalResource");
+		        	//alert(localIds[i]);
 		        }
 	        	 if(!localIdArr.contains(localIds[i])){
 		        	localIdArr.push(localIds[i]);
@@ -354,7 +352,7 @@ function downloadAndUploadImg(serverId,order,isShowLoading){
 				if(isShowLoading){//单个上传进度
 					layer.close(singleIndex);
 				}
-				$("#upImgDiv"+ order).find(".glyphicon-ok-circle").addClass("show").removeClass("hidden");
+				$("#upImgDiv"+ order).find(".glyphicon-ok-circle").addClass("upload_success").addClass("show").removeClass("hidden");
 				$("#upImgDiv"+ order).find(".glyphicon-repeat").addClass("hidden").removeClass("show");
 				$("#upImgDiv"+ order).find(".text_msg").html("上传成功");
 				 upload_complete_num ++;
@@ -410,7 +408,8 @@ function checkLoading(){
 		  
 		  layer.close(loadingIndex);
 		  //if(upload_complete_num >= MAX_PIC_NUM){
-		if(isAllSuccess){
+			  var upload_success_num = $(".upload_success").length;
+		if(isAllSuccess && upload_success_num == MAX_PIC_NUM){
    		  layer.open({
    			    content: '全部上传成功'
    			    ,skin: 'msg'
@@ -423,6 +422,57 @@ function checkLoading(){
 		  }
 	  }
 }
+
+	 
+function uploadimgtoweChat(localIds,orderArr) {/* ios上传  */
+	if (localIds.length == 0) {
+		//modalAlert("请拍照或选择相册照片");
+	} else {
+	  var i = 0, length = localIds.length;	  
+	    function upload() {
+	      wx.uploadImage({
+	        localId: localIds[i],
+	        isShowProgressTips: 0, // 默认为1，显示进度提示
+	        success: function (res) {
+	          var localId = localIds[i];
+	          var order = orderArr[localId];
+	          i++;
+	          var serverId = res.serverId; // 返回图片的服务器端ID
+		        images.localId2serverIdMap[localId] = serverId;
+		        images.localId2uploadStateMap[localId] = 1;
+		        console.log("上传到微信服务器："+serverId);
+		        order = Number(order);
+		        //alert("上传到微信服务器："+serverId);
+		        serverIdArr[order] = serverId;
+		        $("#upImgDiv"+ order).find("input[name=serverId]").val(serverId);
+		        /* if(isShowLoading){//单个上传进度
+					layer.close(singleIndex);
+				} */
+		        downloadAndUploadImg(serverId,order,false);
+	         if (i < length) {
+	            upload();
+	          }
+	        },
+	        fail: function (res) {
+	        	var localId = localIds[i];
+		          var order = orderArr[localId];
+		          i++;
+	        	//modalAlert("稍后重试");
+	        	$("#upImgDiv"+ order).find(".glyphicon-ok-circle").addClass("hidden").removeClass("show");
+				$("#upImgDiv"+ order).find(".glyphicon-repeat").addClass("show").removeClass("hidden");
+				$("#upImgDiv"+ order).find(".text_msg").html("上传失败");
+				$("#upImgDiv"+ order).find("input[name=localId]").val(localId);
+				upload_fail_num ++;
+				checkLoading();
+				if (i < length) {
+		            upload();
+		          }
+	        }
+	      });
+	    };
+	    upload();
+	};
+};
 
 $(function(){
 	/* $(".touchImg").click(function(){
@@ -446,29 +496,10 @@ $(function(){
 		}
 	});
 	
-	var isFirstChoose = false;
 	$("#batchFileBtn").click(function(){
 		var step = $("input[name=step]").val();
-		
 		if(step == 0){
-			//添加图片
-			//$("#batchFile").trigger("click");
-			if(isFirstChoose){
-				isFirstChoose  = false;
-				var idx =  layer.open({
-					    content: '温馨提示：为保障印刷质量，选择图片后请依次点击屏幕下方“预览”、“原图”、“完成”按钮'
-					    ,btn: ['我知道了']
-					    ,yes: function(index){
-					    	//aaa();
-					    	layer.close(idx);
-					    	aaa();
-					    }
-					  });
-			}else{
-				aaa();
-			}
-			
-			
+			aaa();//添加图片
 		}
 		if(step == 1){
 			//准备上传
@@ -509,9 +540,24 @@ $(function(){
 				      $("input[name=step]").val(2);
 				      //alert("localIdArr:"+localIdArr.length + "="+localIdArr + "---" + localIdArr[0]);
 						$("#uploadingMsg").addClass("show").removeClass("hidden");
-						for( var i = 0; i< localIdArr.length; i++){
-							weixinUpload(localIdArr[i], orderArr[localIdArr[i]]);
+						try {
+							if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+							    //alert(navigator.userAgent);  
+							    //alert("is ios");
+							    uploadimgtoweChat(localIdArr,orderArr);
+							} else  {
+								//alert("android");
+								  for( var i = 0; i< localIdArr.length; i++){
+									weixinUpload(localIdArr[i], orderArr[localIdArr[i]]);
+								}  
+								//uploadimgtoweChat(localIdArr,orderArr);
+							}
+						} catch (e) {
+							// TODO: handle exception
+							alert(e);
 						}
+						
+							
 				   }
 			  });
 		}

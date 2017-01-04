@@ -220,5 +220,12 @@
 			<artifactId>spring-security-config</artifactId>
 			<version>4.2.1.RELEASE</version>
 		</dependency>
+		
+		<dependency>
+			<!--图片旋转判断  -->
+		  <groupId>com.drewnoakes</groupId>
+		  <artifactId>metadata-extractor</artifactId>
+		  <version>2.9.1</version>
+		</dependency>
 	</dependencies>
 </project>

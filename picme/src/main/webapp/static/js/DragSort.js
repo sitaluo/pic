@@ -74,7 +74,7 @@ function load (){
 			isTap = true;
 			console.log(event);
 		    var  $imgEdit =  $(event.target);//当前click时间的图片
-		     alert($imgEdit);
+		    // alert($imgEdit);
 		     showModifyImgDiv($imgEdit);
 	     
 	  });  
@@ -239,11 +239,8 @@ function load (){
                 console.log(startTouchImg);
                 console.log("lastTouchImg");
                 console.log(lastTouchImg);
-                /* if(lastTouchImg === startTouchImg){
-                	//相当click时间
-                	console.log("click");
-                }else{ */
-                	if(prevTouchImg != null){
+
+                if(prevTouchImg != null){
                 		$(prevTouchImg).removeClass("dashBorder");
                 	}
                 	
@@ -292,7 +289,12 @@ function load (){
                 	//startimgSpan.append(lastTouchImg);
                 	//endimgSpan.append(startTouchImg);
                 	
-                //}
+                	try {
+                		checkDragImage();
+					} catch (e) {
+						console.log(e);
+					}
+                	
                 console.log("end2");
                 isTapHold = false;
                 break;  
@@ -301,6 +303,45 @@ function load (){
           
     }  
 }  
+
+function checkDragImage(){
+	/**如果在拖动过程的出现两张图片出现在一个地方的情况，修复*/
+	var $twoImageSpan = null;
+	var $noImageSpan = null;
+	var spans = $(rootEl).find("span.touchSpan");
+	spans.each(function(){
+		var $imgs = $(this).find(".touchImg");
+		if($imgs.length == 2){
+			$twoImageSpan = $(this);
+		}else if($imgs.length == 0){
+			$noImageSpan = $(this);
+		}
+	});
+	if($twoImageSpan != null && $noImageSpan != null){
+		//alert("拖动出现了问题，修复。debug信息");
+		var twoImageSpanIndex = $twoImageSpan.parent().children("input[name=img_index]").val();
+		var noImageSpanIndex = $noImageSpan.parent().children("input[name=img_index]").val();
+		twoImageSpanIndex = Number(twoImageSpanIndex);
+		noImageSpanIndex = Number(noImageSpanIndex);
+		if(noImageSpanIndex < twoImageSpanIndex){
+			//向前
+			for(var i = twoImageSpanIndex; i > noImageSpanIndex; i--){
+				moveImageByIndex(i,i-1);
+			}
+		}else{
+			for(var i = noImageSpanIndex; i < twoImageSpanIndex; i++){
+				moveImageByIndex(i,i+1);
+			}
+		}
+	}
+}
+
+function moveImageByIndex(fromIndex,toIndex){
+	console.log("move:"+fromIndex + " to " +toIndex);
+	var fromSpan = $("input[value="+fromIndex+"]").parent().children(".touchSpan");
+	var toSpan = $("input[value="+toIndex+"]").parent().children(".touchSpan");
+	toSpan.append(fromSpan.find("img.touchImg").first());
+}
 
 function _css(el, prop, val){
 	if( el && el.style ){

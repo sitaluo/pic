@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.picme.common.Constants;
 import com.picme.common.FileUtils;
 import com.picme.common.ImageUtils;
 import com.picme.entity.Image;
@@ -77,7 +78,7 @@ public class AlbumAdminController {
 				holeSrcImages.add(file2);
 			}
 		}
-		boolean isHole = true;
+		boolean isHole = Constants.DB_HOLE_COVER_IMAGE_PATH_NAME.equals(album.getCoverImg()) ? true : false;
 		if(isHole){
 			ImageUtils.merge8Image(holeSrcImages, realPath +"album/temp/", "hole_cover.jpg",realPath +"album/cutImgTemp/");
 		}

@@ -29,15 +29,10 @@
 		<fmt:formatDate value="${order.createTime }" pattern="yyyy-MM-dd HH:mm:ss"/>
 	</div><br><br>
 </div>
-<div class="col-xs-12 col-sm-12 col-md-12">
-	<div class="col-xs-6 col-sm-6 col-md-6">
-		<a href="${basePath }weixin/album/view?id=${order.albumId}">查看影集</a>
-	</div>
-</div>
 <hr class="col-xs-12 col-sm-12 col-md-12">
 <div class="col-xs-12 col-sm-12 col-md-12">
 	<div class="col-xs-6 col-sm-6 col-md-6">费用</div>
-	<div class="col-xs-6 col-sm-6 col-md-6 pull-right">${order.totalPrice }</div>
+	<div class="col-xs-6 col-sm-6 col-md-6 pull-right">￥${order.totalPrice }</div>
 </div>
 <div class="col-xs-12 col-sm-12 col-md-12">
 	<div class="col-xs-6 col-sm-6 col-md-6">优惠</div>
@@ -48,6 +43,10 @@
 	<div class="col-xs-6 col-sm-6 col-md-6 pull-right">${order.totalPrice }</div>
 </div>
 <hr>
+<div class="col-xs-12 col-sm-12 col-md-12" style="text-align: center;">
+			<br><br>
+		<a class="btn btn-primary" href="${basePath }weixin/album/view?id=${order.albumId}">查看影集</a>
+</div>
 <%-- <div class="row col-xs-12 col-sm-12 col-md-12" style="text-align: center;">
 	<input type="hidden" name="orderId" id="orderId" value="${order.id}">
 	<span class="col-xs-2 col-sm-2 col-md-2"></span>

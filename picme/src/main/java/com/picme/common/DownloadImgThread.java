@@ -1,6 +1,5 @@
 package com.picme.common;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -9,8 +8,6 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.imageio.ImageIO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,10 +29,10 @@ public class DownloadImgThread implements Runnable{
 	@Override
 	public void run() {
 		String[] imgFileNameAndPath = this.fetchTmpFile(this.mediaId, this.realPath);
-		if(imgFileNameAndPath != null && imgFileNameAndPath[0] != null && !imgFileNameAndPath[0].equals("")){
-			//如果失败，重试一次
+		if(imgFileNameAndPath != null && imgFileNameAndPath[0] != null && imgFileNameAndPath[0].equals("")){
 			imgFileNameAndPath = this.fetchTmpFile(this.mediaId, this.realPath);
 		}
+		
 		if(imgFileNameAndPath != null && imgFileNameAndPath[0] != null && !imgFileNameAndPath[0].equals("")){
 			imageService.update(imgId, imgFileNameAndPath[0],imgFileNameAndPath[1]);
 			logger.debug("从微信服务器下载图片：mediaId:"+mediaId);
@@ -48,6 +45,7 @@ public class DownloadImgThread implements Runnable{
 	private String[] fetchTmpFile(String media_id,String realPath) {
 		String dbFileName = "";
 		String thumbImgName = "";
+		//String[] imgFileNameAndPath = new String[]{dbFileName,thumbImgName};
 		try {
 			//request.getSession().getServletContext().getRealPath("static/upload/imgs/");
 			String path = realPath;
@@ -58,9 +56,17 @@ public class DownloadImgThread implements Runnable{
 			URL u = new URL(url);
 			HttpURLConnection conn = (HttpURLConnection) u.openConnection();
 			conn.setRequestMethod("GET");
+			conn.setDoInput(true);
+			conn.setDoOutput(true);
 			conn.setConnectTimeout(30000);
 			conn.setReadTimeout(30000);
 			conn.connect();
+			if (conn.getResponseCode() == 200){
+				logger.debug("连接成功200:");
+			}else{
+				logger.debug("error:" +conn.getResponseCode());
+				//return imgFileNameAndPath;
+			}
 			BufferedInputStream bis = new BufferedInputStream(
 					conn.getInputStream());
 			String content_disposition = conn
@@ -76,12 +82,14 @@ public class DownloadImgThread implements Runnable{
 				}
 			}else{
 				file_name = media_id + ".jpg";
-				logger.debug("微信图片获取后缀名失败"); 
+				logger.debug("微信图片获取后缀名失败,使用默认"); 
 				//throw new Exception("微信图片获取后缀名失败");
+				//return imgFileNameAndPath;
 			}
 			// 生成不同文件名称
 			dbFileName = "static/upload/imgs/"+file_name;
 			thumbImgName = "static/upload/imgs/"+THUMBNAIL_PRE+file_name;
+			
 			File fileTempDir = new File(path);
 			if(!fileTempDir.exists()){
 				fileTempDir.mkdirs();
@@ -99,15 +107,18 @@ public class DownloadImgThread implements Runnable{
 			bos.close();
 			bis.close();
 			
-			//如果图片大于宽或者高大于2000像素，则压缩到2000
-			/*BufferedImage imageTemp = ImageIO.read(new File(path + file_name));
-			if(imageTemp.getWidth() > 2000 || imageTemp.getHeight() > 2000){
-				String dbFileNameTemp =  path +THUMBNAIL_PRE+ "2000" +file_name;
-				ImageUtils.thumbnail(new File(path + file_name), dbFileNameTemp);
-				dbFileName = dbFileNameTemp;
-			}*/
+			File fileTemp = new File(path,file_name);
+			Integer degree = ImageUtils.getRotateDegree(fileTemp);
+			if(degree != 0){
+				//需要旋转
+				String rotateFileName = "rotate_" + file_name;//
+				dbFileName = "static/upload/imgs/" + rotateFileName;
+				ImageUtils.rotate(degree, fileTemp, path, rotateFileName);
+				ImageUtils.thumbnail(new File(path + rotateFileName), path +THUMBNAIL_PRE+file_name);
+			}else{
+				ImageUtils.thumbnail(new File(path + file_name), path +THUMBNAIL_PRE+file_name);
+			}
 			
-			ImageUtils.thumbnail(new File(path + file_name), path +THUMBNAIL_PRE+file_name);
             logger.debug("微信图片下载并上传到服务器成功:"+ dbFileName); 
 		} catch (MalformedURLException e) {
 			logger.debug("",e);

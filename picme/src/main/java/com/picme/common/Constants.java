@@ -3,9 +3,15 @@ package com.picme.common;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 系统常量
+ * @author kevinwu
+ */
 public interface Constants {
 
 	public static final String CURRENT_USER_KEY = "current_user";
+	/** 镂空封面图片数据库 存放名称 */
+	public static final String DB_HOLE_COVER_IMAGE_PATH_NAME = "static/upload/sysImgs/1.jpg";
 	
 	public interface ImageType{
 		public static final Integer PHOTO_ALBUM = 1;//影集制作 相片
@@ -18,8 +24,8 @@ public interface Constants {
 	
 	public interface GoodsType{
 		public static final Integer PHOTO_ALBUM = 0;//影集制作
-		public static final Integer PHOTOGRAPH = 0;//约拍
-		public static final Integer course = 0;//课程
+		public static final Integer PHOTOGRAPH = 1;//约拍
+		public static final Integer COURSE = 2;//课程
 	}
 	
 	/**

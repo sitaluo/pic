@@ -60,7 +60,7 @@ public class OrderController {
 				order.setUserId(curUser.getId());
 			}
 			order.setAddressId(addressId);
-			order.setOrderNo(BusinessNoUtils.getCommonBusinessNo());
+			order.setOrderNo(BusinessNoUtils.generateOrderNo());
 			order.setGoodsType(Constants.GoodsType.PHOTO_ALBUM);
 			order.setNum(num);
 			order.setState(Constants.AlbumOrderState.NO_PAY.getVal());

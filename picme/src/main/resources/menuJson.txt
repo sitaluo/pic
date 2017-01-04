@@ -8,7 +8,7 @@
         {
             "type": "view", 
             "name": "影集test", 
-            "url": "http://969cbf98.ngrok.io/picme/weixin/code"
+            "url": "http://beanbean.tunnel.2bdata.com/picme/weixin/code"
         }, 
         {
             "name": "发现影迷", 

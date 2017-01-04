@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Transparency;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +26,10 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
 import org.springframework.util.StringUtils;
+
+import com.drew.imaging.jpeg.JpegMetadataReader;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifDirectoryBase;
 
 public class ImageUtils {
 	//private static Logger logger = LoggerFactory.getLogger(ImageUtils.class);
@@ -536,7 +542,91 @@ public class ImageUtils {
         cutImage(srcImg, output, new java.awt.Rectangle(x, y, width, height));
     }
     
-    
+    /**
+     * 检查图片是否需要旋转
+     * @param jpegFile 源图片
+     * @return 需要旋转的角度 0表示不需要旋转
+     */
+    public static Integer getRotateDegree(File jpegFile) {
+    	Integer turn = 0;
+    	try {
+    		 Metadata metadata = JpegMetadataReader.readMetadata(new FileInputStream(jpegFile));
+             ExifDirectoryBase directory = metadata.getFirstDirectoryOfType(ExifDirectoryBase.class);
+             if(directory != null){
+            	Integer orientation = directory.getInteger(ExifDirectoryBase.TAG_ORIENTATION);
+            	//System.out.println(orientation);
+          		if (orientation == 3) {
+          			turn = 180;
+          		} else if (orientation == 6) {
+          			turn = 90;
+          		} else if (orientation == 8) {
+          			turn = 270;
+          		}
+             }
+		} catch (Exception e) {
+			//e.printStackTrace();
+		}
+ 		return turn;
+    }
+
+    /**
+    * 旋转图片
+    * @param degree 旋转角度
+    * @param imgFile 原图片文件
+    * @param newPath 旋转处理后图片的存放文件夹路径
+    * @param newName 旋转处理后的文件名
+    * @throws Exception
+    */
+    public static void rotate(int degree,File imgFile,String newPath,String newName) throws Exception {
+        int swidth = 0; // 旋转后的宽度
+        int sheight = 0; // 旋转后的高度
+        int x; // 原点横坐标
+        int y; // 原点纵坐标
+
+        if (!imgFile.isFile()) {
+            throw new Exception("ImageDeal>>>" + imgFile + " 不是一个图片文件!");
+        }
+        BufferedImage bi = ImageIO.read(imgFile); // 读取该图片
+        // 处理角度--确定旋转弧度
+        degree = degree % 360;
+        if (degree < 0)
+            degree = 360 + degree;// 将角度转换到0-360度之间
+        double theta = Math.toRadians(degree);// 将角度转为弧度
+
+        // 确定旋转后的宽和高
+        if (degree == 180 || degree == 0 || degree == 360) {
+            swidth = bi.getWidth();
+            sheight = bi.getHeight();
+        } else if (degree == 90 || degree == 270) {
+            sheight = bi.getWidth();
+            swidth = bi.getHeight();
+        } else {
+            swidth = (int) (Math.sqrt(bi.getWidth() * bi.getWidth()
+                    + bi.getHeight() * bi.getHeight()));
+            sheight = (int) (Math.sqrt(bi.getWidth() * bi.getWidth()
+                    + bi.getHeight() * bi.getHeight()));
+        }
+
+        x = (swidth / 2) - (bi.getWidth() / 2);// 确定原点坐标
+        y = (sheight / 2) - (bi.getHeight() / 2);
+
+        BufferedImage spinImage = new BufferedImage(swidth, sheight,
+                bi.getType());
+        // 设置图片背景颜色
+        Graphics2D gs = (Graphics2D) spinImage.getGraphics();
+        gs.setColor(Color.white);
+        gs.fillRect(0, 0, swidth, sheight);// 以给定颜色绘制旋转后图片的背景
+
+        AffineTransform at = new AffineTransform();
+        at.rotate(theta, swidth / 2, sheight / 2);// 旋转图象
+        at.translate(x, y);
+        AffineTransformOp op = new AffineTransformOp(at,
+                AffineTransformOp.TYPE_BICUBIC);
+        spinImage = op.filter(bi, spinImage);
+        File sf = new File(newPath, newName);
+        ImageIO.write(spinImage, "JPG", sf); // 保存图片
+
+    }
     
     
     
