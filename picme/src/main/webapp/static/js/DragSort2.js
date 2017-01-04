@@ -15,7 +15,7 @@ var isTap = false;
 
 function load (){  
 	//$(document).on("pagecreate","#select_img_div",function(){
-	  $(".touchImgDiv").on("taphold",function(event){
+	  $(".touchImg").on("taphold",function(event){
 		  isTapHold = true;
 		  //alert("taphold");
 		  console.log("isDefaultPrevented:"+event.isDefaultPrevented());
@@ -29,7 +29,7 @@ function load (){
           console.log(target);
           console.log(event);
           var $target = $(target);
-          if($target.hasClass("touchImgDiv")){
+          if($target.hasClass("touchImg")){
           	$target.addClass("dashBorder");
           	startTouchImg = target;
               lastTouchImg = target;
@@ -64,7 +64,7 @@ function load (){
 				
           }
 	  });   
-		$(".touchImgDiv").on("tap",function(event){
+		$(".touchImg").on("tap",function(event){
 			//alert("tap");
 			$(this).parent().children(".defaultImg").addClass("hidden");
 			event.preventDefault();
@@ -80,11 +80,16 @@ function load (){
 	  });  
 //	});
 	
-  var touchImageDivs = document.getElementsByClassName("touchImgDiv"); //touchImg
-    for(var i = 0; i < touchImageDivs.length; i ++ ){
-    	touchImageDivs[i].addEventListener('touchstart',touch, false);  
-    	touchImageDivs[i].addEventListener('touchmove',touch, false);  
-    	touchImageDivs[i].addEventListener('touchend',touch, false); 
+  //var touchDiv = document.getElementById("select_img_div");
+  var touchSpans = document.getElementsByClassName("touchImg"); //touchImg
+   /*  document.addEventListener('touchstart',touch, false);  
+    document.addEventListener('touchmove',touch, false);  
+    document.addEventListener('touchend',touch, false);   */
+   //console.log(touchSpans);
+    for(var i = 0; i < touchSpans.length; i ++ ){
+    	touchSpans[i].addEventListener('touchstart',touch, false);  
+    	touchSpans[i].addEventListener('touchmove',touch, false);  
+    	touchSpans[i].addEventListener('touchend',touch, false); 
     	//touchSpans[i].addEventListener('click',function(){alert("click2");}, false);
     }
     
@@ -103,7 +108,7 @@ function load (){
                 //console.log(target);
                 //console.log(event);
                 var $target = $(target);
-                if($target.hasClass("touchImgDiv")){
+                if($target.hasClass("touchImg")){
                 	$target.addClass("dashBorder");
                 	startTouchImg = target;
 	                lastTouchImg = target;
@@ -181,7 +186,7 @@ function load (){
                 //console.log(target);
                 //console.log(event);
                 var $target = $(target);
-                if($target.hasClass("touchImgDiv")){
+                if($target.hasClass("touchImg")){
                 	lastTouchImg = target;
                 	if(prevTouchImg != null && !(prevTouchImg === startTouchImg)){
                 		$(prevTouchImg).removeClass("dashBorder");
@@ -252,32 +257,31 @@ function load (){
                 		//showModifyImgDiv();
                 	}else if(startImgOrder < endImgOrder){
                 		var startTopDiv = startimgSpan.parent().parent();
-                		//var $startImg = startTopDiv.find("img.touchImg");
-                		var $startImg = startTopDiv.find("div.touchImgDiv");
+                		var $startImg = startTopDiv.find("img.touchImg");
                 		var endTopDiv = endimgSpan.parent().parent();
                 		var preTopDiv = startTopDiv;
                 		var nextTopDiv = startTopDiv.next().hasClass("pageNumDiv") ? startTopDiv.next().next() : startTopDiv.next();
                 		while(nextTopDiv.length > 0 && !nextTopDiv.hasClass("pageNumDiv") && !(nextTopDiv[0] === endTopDiv[0])){
-                			preTopDiv.find("span").append(nextTopDiv.find("div.touchImgDiv"));
+                			preTopDiv.find("span").append(nextTopDiv.find("img.touchImg"));
                 			preTopDiv = nextTopDiv;
                 			nextTopDiv = nextTopDiv.next().hasClass("pageNumDiv") ? nextTopDiv.next().next() : nextTopDiv.next();
                 		}
-                		preTopDiv.find("span").append(nextTopDiv.find("div.touchImgDiv"));
+                		preTopDiv.find("span").append(nextTopDiv.find("img.touchImg"));
                 		nextTopDiv.find("span").append($startImg);
                 	}else{
                 		//startImgOrder > endImgOrder
                 		var endTopDiv = startimgSpan.parent().parent();
                 		var startTopDiv = endimgSpan.parent().parent();
-                		var $startImg = startTopDiv.find("div.touchImgDiv");
-                		var $endImg = endTopDiv.find("div.touchImgDiv");
+                		var $startImg = startTopDiv.find("img.touchImg");
+                		var $endImg = endTopDiv.find("img.touchImg");
                 		var afterTopDiv = endTopDiv;
                 		var prevTopDiv = afterTopDiv.prev().hasClass("pageNumDiv") ? afterTopDiv.prev().prev() : afterTopDiv.prev();
                 		while(prevTopDiv.length > 0 && !prevTopDiv.hasClass("pageNumDiv") && !(prevTopDiv[0] === startTopDiv[0])){
-                			afterTopDiv.find("span").append(prevTopDiv.find("div.touchImgDiv"));
+                			afterTopDiv.find("span").append(prevTopDiv.find("img.touchImg"));
                 			afterTopDiv = prevTopDiv;
                 			prevTopDiv = prevTopDiv.prev().hasClass("pageNumDiv") ? prevTopDiv.prev().prev() : prevTopDiv.prev();
                 		}
-                		afterTopDiv.find("span").append(prevTopDiv.find("div.touchImgDiv"));
+                		afterTopDiv.find("span").append(prevTopDiv.find("img.touchImg"));
                 		prevTopDiv.find("span").append($endImg);
                 		
                 	}
@@ -306,7 +310,7 @@ function checkDragImage(){
 	var $noImageSpan = null;
 	var spans = $(rootEl).find("span.touchSpan");
 	spans.each(function(){
-		var $imgs = $(this).find(".touchImgDiv");
+		var $imgs = $(this).find(".touchImg");
 		if($imgs.length == 2){
 			$twoImageSpan = $(this);
 		}else if($imgs.length == 0){
@@ -336,7 +340,7 @@ function moveImageByIndex(fromIndex,toIndex){
 	console.log("move:"+fromIndex + " to " +toIndex);
 	var fromSpan = $("input[value="+fromIndex+"]").parent().children(".touchSpan");
 	var toSpan = $("input[value="+toIndex+"]").parent().children(".touchSpan");
-	toSpan.append(fromSpan.find("div.touchImgDiv").first());
+	toSpan.append(fromSpan.find("img.touchImg").first());
 }
 
 function _css(el, prop, val){

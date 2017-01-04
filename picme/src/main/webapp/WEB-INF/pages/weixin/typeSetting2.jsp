@@ -35,6 +35,19 @@
 .touchImg{
 	-webkit-touch-callout:none;
 }
+/* img { -webkit-touch-callout:none; } */
+.bg_image{
+	/* background: url(${basePath }static/upload/sysImgs/noimg.png) no-repeat center; */
+	/*  background-size:100% 50%;  */
+	background-size:contain;
+	background-image: url(${basePath }static/upload/sysImgs/noimg.png);
+	 background-position: center; 
+	background-repeat: no-repeat;
+	background-clip: content;
+}
+.bg_image::after{
+	content: ""; display: block;padding-bottom: 20%;
+}
 </style>
 </head>
 <body class="" id="body">
@@ -74,9 +87,16 @@
 				<div class="tile__list" style="height:inherit;padding-bottom: 20px;display:table;vertical-align:middle;max-height:180px;width:100%;">
 					<span style="display:table-cell;vertical-align:middle;height:180px;width:0px;padding-bottom: 20px;" class="touchSpan">
 						<img name="preview${(i.index + 1)}" src="${basePath }static/upload/sysImgs/noimg.png"
-						class="img-responsive noPreImg touchImg hidden" alt="">
-						<img name="default${(i.index + 1)}" src="${basePath }static/upload/sysImgs/noimg.png"
-						class="img-responsive defaultImg" alt="">
+							class="img-responsive noPreImg touchImg hidden" alt="">
+						<div class="img-responsive noPreImgDiv  touchImgDiv bg_image"
+							 style="height:150px;padding: 5px;width:90%;">
+						</div>
+						<!-- <div class="img-responsive defaultImg bg_image"
+							style="height:150px;">
+						</div> -->
+						<%-- <img name="default${(i.index + 1)}" src="${basePath }static/upload/sysImgs/noimg.png"
+						class="img-responsive defaultImg" alt=""> --%>
+						
 					</span>
 					<input type="hidden" name="img_index" value="${i.index }">
 				</div>
@@ -147,7 +167,7 @@
 
 <%@include file="../common/MainJS.jsp"%>
 <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
-<script src="${staticPath}/js/DragSort.js" type="text/javascript"></script>
+<script src="${staticPath}/js/DragSort.js?v=1" type="text/javascript"></script>
 <script src="${staticPath}/js/WeixinJsApi.js" type="text/javascript"></script>
 <script src="${staticPath}/js/jquery.mobile-1.4.5.js" type="text/javascript"></script>
 <!-- <script src="//cdn.bootcss.com/jquery-mobile/1.4.5/jquery.mobile.min.js" type="text/javascript"></script>
@@ -185,7 +205,7 @@ var upload_fail_num = 0;
 var loadingIndex = null;
 var localIdArr = new Array();//
 
-var isAlertError = false;//debug用
+var isAlertError = true;//debug用
 
 Array.prototype.contains = function ( needle ) {
 	  for (i in this) {
@@ -230,13 +250,23 @@ function aaa(){
 		        	images.localIds.push(localIds[i]);
 		        	//$("img[name=preview"+(i+1)+"]").attr("src",localIds[i]);
 		        	var imgTemp = $("img[name^=preview].noPreImg").first();
-		        	imgTemp.removeClass("hidden");
+		        	//imgTemp.removeClass("hidden");
 		        	imgTemp.parent().children(".defaultImg").addClass("hidden");
 		            imgTemp.prop("src",localIds[i]);
 		            imgTemp.removeClass("noPreImg");
 		            var imgTemp2 = $("img[name^=up_preview].noPreImg").first();
 		            imgTemp2.prop("src",localIds[i]);
 		            imgTemp2.removeClass("noPreImg");
+		            
+		            var noPreImgDiv = imgTemp.parent().children(".noPreImgDiv");
+		            noPreImgDiv.css("background-image","url("+localIds[i]+")");
+		            noPreImgDiv.removeClass("hidden");
+		            
+		            var srcTemp = noPreImgDiv.css('backgroundImage');
+		            console.log(srcTemp);
+			    	  var src = srcTemp.substring(4,srcTemp.length-1);
+					console.log(src);
+		            
 	        	 }else{
 	        		 repeatNum ++;
 	        		 layer.open({
@@ -337,7 +367,7 @@ function downloadAndUploadImg(serverId,order,isShowLoading){
 		console.log("userId，albumId不能为空");	
 	}
 	var dataStr = "mediaId="+serverId + "&userId=" + userId + "&albumId=" + albumId+"&order="+order;
-	
+	dataStr = encodeURI(dataStr);
 	$.ajax({
 		type : "POST",
 		data : dataStr,
@@ -372,10 +402,10 @@ function downloadAndUploadImg(serverId,order,isShowLoading){
 				console.log("上传到服务器失败了");
 				upload_fail_num ++;
 				if(isAlertError){
-		    		alert(JSON.stringify(res));
+		    		alert(JSON.stringify(resp));
 		    	}
 				if(isAlertError){
-		    		alert("下载图片失败："+JSON.stringify(errorThrown));
+		    		alert("下载图片失败："+JSON.stringify(resp));
 		    	}
 			}
 			
@@ -524,11 +554,20 @@ $(function(){
 				      
 				      var orderArr = [];
 				      var order2LocalId = [];
-				      $(".touchImg").each(function(j){
+				    /*   $(".touchImg").each(function(j){
 				    	  var img = $(this);
 				    	  orderArr[img.attr("src")] = j;
 				    	  order2LocalId[j] = img.attr("src");
 				    	  $("img[name=up_preview]").eq(j).attr("src",order2LocalId[j]);
+				      }); */
+				      $(".touchImgDiv").each(function(j){
+				    	  var imgDiv = $(this);
+				    	  var srcTemp = imgDiv.css('backgroundImage');
+				    	  var src = srcTemp.substring(4,srcTemp.length-1);
+				    	  console.log("touchImgDiv:src"+src);
+				    	  orderArr[src] = j;
+				    	  order2LocalId[j] = src;
+				    	  $("img[name=up_preview]").eq(j).attr("src",src);
 				      });
 				      if(orderArr.length != 24){
 				    	  console.log("error:order");
@@ -547,10 +586,10 @@ $(function(){
 							    uploadimgtoweChat(localIdArr,orderArr);
 							} else  {
 								//alert("android");
-								  for( var i = 0; i< localIdArr.length; i++){
+								 /*  for( var i = 0; i< localIdArr.length; i++){
 									weixinUpload(localIdArr[i], orderArr[localIdArr[i]]);
-								}  
-								//uploadimgtoweChat(localIdArr,orderArr);
+								}  */ 
+								uploadimgtoweChat(localIdArr,orderArr);
 							}
 						} catch (e) {
 							// TODO: handle exception
@@ -603,7 +642,8 @@ $(function(){
 				    		 localIdArr[indexOflocalId] = localId;
 					        	//images.localIds.push(localId);
 					        	images.localIds[indexOflocalId] = localId;
-					        	 $currentEditImg.attr("src",localId);
+					        	 //$currentEditImg.attr("src",localId);
+					        	 $currentEditImg.css("background-image","url("+localId+")");
 				    	 }else{
 				    		 console.log("error:indexOflocalId>-1");
 				    	 }
@@ -635,7 +675,9 @@ $(function(){
 var $currentEditImg = null;
 function showModifyImgDiv($imgCurrentEdit){
 	$currentEditImg = $imgCurrentEdit;
-	var src = $imgCurrentEdit.attr("src");
+	//var src = $imgCurrentEdit.attr("src");
+	 var srcTemp = $imgCurrentEdit.css('backgroundImage');
+	  var src = srcTemp.substring(4,srcTemp.length-1);
 	$("#modify_img_div").find("img").attr("src",src);
 	$("#modify_img_div").addClass("show").removeClass("hidden");
 }
