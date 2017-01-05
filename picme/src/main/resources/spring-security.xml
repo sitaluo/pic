@@ -14,7 +14,7 @@
 	<http pattern="/upload/**" security="none"/>
 	
 	<http auto-config="true" use-expressions="false">
-		<intercept-url pattern="/admin*" access="ROLE_ADMIN" />
+		<intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
 	</http>
 
 	<authentication-manager>

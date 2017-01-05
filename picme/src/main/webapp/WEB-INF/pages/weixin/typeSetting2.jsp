@@ -362,12 +362,22 @@ function downloadAndUploadImg(serverId,order,isShowLoading){
 	}
 	var albumId = $("#albumId").val();
 	var userId = $("#userId").val();
+	albumId = Number(albumId);
+	userId = Number(userId);
+	order = Number(order);
 	if(userId > 0 && albumId > 0){
 	}else{
 		console.log("userId，albumId不能为空");	
+		alert("出错了，userId，albumId不能为空");
+		return;
 	}
 	var dataStr = "mediaId="+serverId + "&userId=" + userId + "&albumId=" + albumId+"&order="+order;
 	dataStr = encodeURI(dataStr);
+	/* layer.open({
+	    content: "${basePath }download/tmpFile.json" + dataStr
+	    ,btn: '复制在浏览器打开'
+	  });
+	   */
 	$.ajax({
 		type : "POST",
 		data : dataStr,
@@ -390,10 +400,11 @@ function downloadAndUploadImg(serverId,order,isShowLoading){
 					layer.close(loadingIndex);
 				}
 				//alert(loadingIndex);
-				loadingIndex = layer.open({
+				 loadingIndex = layer.open({
 		    	    type: 2,shadeClose: false,shade: 'background-color: rgba(0,0,0,.3)'
 		    	    ,content: "上传中("+upload_complete_num+"/"+MAX_PIC_NUM+")"
-		    	  });
+		    	  }); 
+		    	  
 				//alert("上传到服务器");
 			} else {
 				$("#upImgDiv"+ order).find(".glyphicon-ok-circle").addClass("hidden").removeClass("show");
@@ -458,34 +469,48 @@ function uploadimgtoweChat(localIds,orderArr) {/* ios上传  */
 	if (localIds.length == 0) {
 		//modalAlert("请拍照或选择相册照片");
 	} else {
-	  var i = 0, length = localIds.length;	  
+		//alert(localIds);
+	  var i = 0, length = localIds.length;	
+	  //alert("upload start");
 	    function upload() {
+	    	 //alert("upload start " + i);
+	    	 var localIdTemp = localIds[i];
+	    	 if (localIdTemp.indexOf("wxlocalresource") != -1) {
+	    		 localIdTemp = localIdTemp.replace("wxlocalresource", "wxLocalResource");
+             }
 	      wx.uploadImage({
-	        localId: localIds[i],
+	        localId: localIdTemp,
 	        isShowProgressTips: 0, // 默认为1，显示进度提示
 	        success: function (res) {
+	        	//alert("upload success " + i);
 	          var localId = localIds[i];
 	          var order = orderArr[localId];
+	        //order = Number(order);
+	          order = i;
 	          i++;
 	          var serverId = res.serverId; // 返回图片的服务器端ID
 		        images.localId2serverIdMap[localId] = serverId;
 		        images.localId2uploadStateMap[localId] = 1;
 		        console.log("上传到微信服务器："+serverId);
-		        order = Number(order);
 		        //alert("上传到微信服务器："+serverId);
 		        serverIdArr[order] = serverId;
 		        $("#upImgDiv"+ order).find("input[name=serverId]").val(serverId);
 		        /* if(isShowLoading){//单个上传进度
 					layer.close(singleIndex);
 				} */
+				//alert(order);
 		        downloadAndUploadImg(serverId,order,false);
 	         if (i < length) {
 	            upload();
 	          }
 	        },
 	        fail: function (res) {
+	        	//alert("upload error " + i);
+	        	if(isAlertError){
+		    		alert("uploadimgtoweChat失败"+JSON.stringify(res));
+		    	}
 	        	var localId = localIds[i];
-		          var order = orderArr[localId];
+		          var order = i;//orderArr[localId];
 		          i++;
 	        	//modalAlert("稍后重试");
 	        	$("#upImgDiv"+ order).find(".glyphicon-ok-circle").addClass("hidden").removeClass("show");
@@ -547,10 +572,10 @@ $(function(){
 						$("#step2_div").addClass("show").removeClass("hidden");
 				      layer.close(index);
 				      
-				      loadingIndex = layer.open({
+				        loadingIndex = layer.open({
 				    	    type: 2,shadeClose: false,shade: 'background-color: rgba(0,0,0,.3)'
 				    	    ,content: '上传中(0/24)'
-				    	  });
+				    	  }); 
 				      
 				      var orderArr = [];
 				      var order2LocalId = [];
@@ -560,7 +585,7 @@ $(function(){
 				    	  order2LocalId[j] = img.attr("src");
 				    	  $("img[name=up_preview]").eq(j).attr("src",order2LocalId[j]);
 				      }); */
-				      $(".touchImgDiv").each(function(j){
+				      $("div.touchImgDiv").each(function(j){
 				    	  var imgDiv = $(this);
 				    	  var srcTemp = imgDiv.css('backgroundImage');
 				    	  var src = srcTemp.substring(4,srcTemp.length-1);
@@ -569,12 +594,14 @@ $(function(){
 				    	  order2LocalId[j] = src;
 				    	  $("img[name=up_preview]").eq(j).attr("src",src);
 				      });
-				      if(orderArr.length != 24){
-				    	  console.log("error:order");
+				      if(isAlertError){
 				      }
+				      
 				      $(".tempPreImg").each(function(j){
 				    	  $(this).attr("src",order2LocalId[j]);
 				      });
+				      
+				      //return;
 				      
 				      $("input[name=step]").val(2);
 				      //alert("localIdArr:"+localIdArr.length + "="+localIdArr + "---" + localIdArr[0]);
@@ -583,13 +610,13 @@ $(function(){
 							if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
 							    //alert(navigator.userAgent);  
 							    //alert("is ios");
-							    uploadimgtoweChat(localIdArr,orderArr);
+							    uploadimgtoweChat(order2LocalId,orderArr);
 							} else  {
 								//alert("android");
 								 /*  for( var i = 0; i< localIdArr.length; i++){
 									weixinUpload(localIdArr[i], orderArr[localIdArr[i]]);
 								}  */ 
-								uploadimgtoweChat(localIdArr,orderArr);
+								uploadimgtoweChat(order2LocalId,orderArr);
 							}
 						} catch (e) {
 							// TODO: handle exception

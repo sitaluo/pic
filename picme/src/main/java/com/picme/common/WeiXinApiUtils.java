@@ -29,15 +29,15 @@ public class WeiXinApiUtils {
 	//获取接口调用凭证
 	public static synchronized String getAccessToken(){
 		Long currentTimeSecond = System.currentTimeMillis();
-		boolean  needRefresh = ((currentTimeSecond - LAST_GET_ACCESS_TOKEN_TIME) / 1000) - 7200 >= 0 ? true : false;
+		boolean  needRefresh = ((currentTimeSecond - LAST_GET_ACCESS_TOKEN_TIME) / 1000) - 7000 >= 0 ? true : false;
 		System.out.println(needRefresh);
 		if(ACCESS_TOKEN == null || needRefresh){
 			String jsonStr = HttpClientUtils.get(GET_ACCESS_TOKEN_URL);
 			LinkedHashMap<Object, Object> o = (LinkedHashMap<Object, Object>) JsonUtil.readValue(jsonStr, Object.class);
 			String access_token = (String) o.get("access_token");
 			ACCESS_TOKEN = access_token;
+			LAST_GET_ACCESS_TOKEN_TIME = currentTimeSecond;
 		}
-		LAST_GET_ACCESS_TOKEN_TIME = currentTimeSecond;
 		logger.debug("ACCESS_TOKEN:"+ACCESS_TOKEN);
 		return ACCESS_TOKEN;
 	}
